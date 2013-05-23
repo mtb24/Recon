@@ -1,0 +1,90 @@
+
+#navbar li:hover ul ,#navbar li.hover ul {
+	display: block;
+	position: absolute;
+	margin-left: 192px;
+	margin-top: -40px;
+	padding: 0;
+	border-right: 2px solid grey;
+	border-bottom: 2px solid grey;
+	border-left: 2px solid grey;
+	border-top: 2px solid grey;
+}
+						
+#navbar li ul 	{
+	display: none; 
+	width: 10em; 
+	height: -5px;
+	background-color: white;
+}
+#tablediv{
+        margin-top:50px;
+}	
+#navbar li:hover li a, #navbar li.hover li a 	{
+
+	background-color: #ffffff;
+	color: #000000;
+	font-size: 15pt;
+	font-family: arial;
+	line-height: 20%;
+}
+		
+#navbar {
+	margin-top:0px;
+	padding: 0;
+	height: 80%;
+	width: 100%;
+}
+	
+#navbar span {
+	font-size: 20pt; 
+	font-family: arial;
+}
+	
+#navbar li {
+	list-style: none;
+	float: left; 
+}
+	
+#navbar li a {
+	display: block;
+	padding: 0px 10px;
+	background-color: #ffffff;
+	color: #000000;
+	text-decoration: none; 
+}
+
+#i {
+	width: 200px;
+	height:100px;
+	float: left;
+	border: 1px solid white;
+	background: white;
+	margin-left: 280px;
+	margin-bottom:-20px;
+	padding-top: 10px
+}	
+#navbar li:hover li, #navbar li.hover li {
+	float: none; 
+}
+	
+#navbar li:hover li a, #navbar li.hover li a {
+	background-color: #ffffff;
+	color: red;
+	font-size: 15px;
+	padding-top: 5px;
+	font-family: arial;
+}
+	
+#navbar li li a:hover {
+	background-color: #edeeef; 
+}	
+
+.size-border {
+	display: block;
+	width: 200px;
+	height:100px;
+	border: 1px solid black;
+	padding-top: 4px;
+	padding-left: 3px;
+}
