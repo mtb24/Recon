@@ -13,11 +13,12 @@
 
 	$(document).ready(function() {
 
-                var d = new Date();
-                var month = d.getMonth() + 1;
-                var day = d.getDate();
-                var year = d.getFullYear();
-		var theDate = month + "-" + day + "-" + year;
+                var d = new Date(),
+                    month = d.getMonth() + 1,
+                    day = d.getDate(),
+                    year = d.getFullYear(),
+		    theDate = month + "-" + day + "-" + year,
+		    errorFound = false;
                 $("#report_date, #date").val(theDate);
                 
                 $("#store_id").change(function(){
@@ -25,11 +26,12 @@
 		});
 
 		$("input[type='text']").change( function() {
-			theClass        =       $(this).attr('class');
-			theItem		=	$(this).attr('rel');
-			curValue	=	parseFloat($(this).attr('value'));
-			curValue	=	Math.round(curValue*100)/100;
-			errorFound	=	false;
+			var theClass = $(this).attr('class'),
+			    theItem  = $(this).attr('rel'),
+			    errorFound = false,
+			    curValue = parseFloat($(this).attr('value'));
+			curValue = Math.round(curValue*100)/100;
+			
 			$("."+theClass).each(function() {
 				if($(this).attr('rel') == theItem) {
 					/* input is not a valid number */
@@ -119,7 +121,7 @@
 		
 
 		// Labor Goal per person (in hundreds) indexed by store ID
-		var labor_goal = new Object;
+		var labor_goal = [];
 		labor_goal["1"]  = 225;
 		labor_goal["2"]  = 225;
 		labor_goal["3"]  = 225;
