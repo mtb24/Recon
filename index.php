@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
 <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.4.custom.css" />
 <link type="text/css" rel="Stylesheet" href="css/jquery.validity.css" />
-<script src="js/jquery-1.7.2.min.js"></script>
+<script src="js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="js/jquery.tools.min.js"></script>
 <script type="text/javascript" src="js/jquery.validity.js"></script>
 <script type="text/javascript"> 
@@ -21,24 +21,24 @@
 		    errorFound = false;
                 $("#report_date, #date").val(theDate);
                 
-                $("#store_id").change(function(){
+                $(document).on("change", "#store_id", function(){
 			var theStore = $('#store_id option:selected').attr('value');
 		});
 
-		$("input[type='text']").change( function() {
+		$(document).on("change", "input[type='text']", function() {
 			var theClass = $(this).attr('class'),
 			    theItem  = $(this).attr('rel'),
 			    errorFound = false,
-			    curValue = parseFloat($(this).attr('value'));
+			    curValue = parseFloat( $(this).val() );
 			curValue = Math.round(curValue*100)/100;
 			
 			$("."+theClass).each(function() {
 				if($(this).attr('rel') == theItem) {
 					/* input is not a valid number */
 					if (isNaN(curValue)) {
-						alert ('not a valid number (use the 1.23 format)');
+						//alert ('not a valid number (use the 1.23 format)');
 						$(this).css('background-color','#ffa1a1');
-						$(this).val('').focus();
+						//$(this).val('').focus();
 						errorFound = true;
 					} else { /* input is valid */
 						$(this).css('background-color',''); /* reset color, if previous error */
@@ -58,9 +58,9 @@
 		});
 
 		function calculateVariance(theItem) {
-			totalValue		=	parseFloat($("#"+theItem).attr('value'));	
+			totalValue		=	parseFloat($("#"+theItem).val());	
 			totalValue		=	Math.round(totalValue*100)/100;	
-			theRPRO			=	parseFloat($("#rpro"+theItem).attr('value'));
+			theRPRO			=	parseFloat($("#rpro"+theItem).val());
 			theRPRO			=	Math.round(theRPRO*100)/100;
 			variance		=	totalValue - theRPRO;
 			if (variance < 0) {
@@ -77,11 +77,11 @@
 			totalvariance	=	0;
 
 			$('.col1, .col4').each(function() {
-				v1 = parseFloat($(this).attr('value'));
+				v1 = parseFloat($(this).val());
 				totalactual	+=	(isNaN(v1)) ? 0 : v1;
 			});
 			$('.col2').each(function() {
-				v2 = parseFloat($(this).attr('value'));
+				v2 = parseFloat($(this).val());
 				totalrPRO	+=	(isNaN(v2)) ? 0 : v2;
 			});
 			$('.col3').each(function() {
@@ -103,13 +103,12 @@
 		}
 		
 		function calculateGCVariance(gc_Item) {
-			//alert("gc_Item: "+gc_Item);
-			actualValue		=	$("#gc_"+gc_Item).attr('value');	
+			actualValue		=	$("#gc_"+gc_Item).val();
 			actualValue		=	Math.round(parseFloat(actualValue)*100)/100;
-			rproValue		=	$("#gc_rpro_"+gc_Item).attr('value');
+			rproValue		=	$("#gc_rpro_"+gc_Item).val();
 			rproValue		=	Math.round(parseFloat(rproValue)*100)/100;
 			gc_variance		=	actualValue - rproValue;
-			//alert("Actual: "+actualValue+" rproValue: "+rproValue+" variance: "+gc_variance);
+
 			if (gc_variance < 0) {
 				$("#gc_variance_"+gc_Item).html('<font color="red"><b>$ '+gc_variance+'</b></font>');
 			} else if (isNaN(gc_variance)) {
@@ -137,7 +136,7 @@
 		labor_goal["20"] = 0;
 
 
-		$("#service_head_count").blur( function () {
+		$(document).on("blur", "#service_head_count", function () {
 			var wholeNumber = false;
 			var v = $("#service_head_count").val();
 			/* force whole or half numbers */
@@ -153,7 +152,7 @@
 			}
 		});
 		
-		$("#service_labor_completed").blur(function() {
+		$(document).on("blur", "#service_labor_completed", function() {
 			setServiceVariance();
 		});
 		
@@ -192,7 +191,7 @@
 			return result.valid;
 		};
 		
-		$(".submit").click(function() {
+		$(document).on("click", ".submit", function() {
 			/* Make sure required form data is present */
 			if (validInputs()) { 
 				/* Make sure form hasn't already been submitted today */
@@ -222,8 +221,8 @@
 										// load it immediately after the construction
 										load: true
 									});
-									$('.submit').attr("disabled","true").css("background-color","#33AD33").attr("value","Done!");
-									$("button.close").click(function(){
+									$('.submit').attr("disabled","true").css("background-color","#33AD33").val("Done!");
+									$(document).on("click", "button.close", function(){
 										$("#popUpModal").css({display:'none'});
 									});
 								}
@@ -245,8 +244,8 @@
 								// load it immediately after the construction
 								load: true
 							});
-							$('.submit').attr("disabled","true").css("background-color","#CD5555").attr("value","Already submitted for today");
-							$("button.close").click(function(){
+							$('.submit').attr("disabled","true").css("background-color","#CD5555").val("Already submitted for today");
+							$(document).on("click", "button.close", function(){
 								$("#popUpModal").css({display:'none'});
 							});
 						}
@@ -263,18 +262,19 @@
 				       "<p class='firstNotice'>NEW FORM! Some things you should know:</p><ul class='firstNoticeList'><li>You cannot change the date</li><li>Store Name is mandatory</li><li>Employee Name is mandatory</li><li>You can tab through the fields for speed!</li></ul>"
 				       );
 		$("#popUpModal").css({border:'10px solid red'});
-		$("#popUpModal").overlay({
-			top: 260,
-			mask: {
-				color: '#99FF99',
-				loadSpeed: 100,
-				opacity: 0.95
-			},
+
+		//$("#popUpModal").overlay({
+		//	top: 260,
+		//	mask: {
+		//		color: '#99FF99',
+		//		loadSpeed: 100,
+		//		opacity: 0.95
+		//	},
 			// disable this for modal dialog-type of overlays
-			closeOnClick: true,
+		//	closeOnClick: true,
 			// load it immediately after the construction
-			load: true
-		});
+		//	load: true
+		//});
         });
 	</script>
 </head>
