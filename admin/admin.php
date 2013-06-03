@@ -97,20 +97,16 @@ $labor_goal = array(
 		    );
 
 ?>
-<html>
+<!doctype html>
+
+<html lang="en">
 <head>
-<title> Recon Reloaded </title>
-<link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
-<link href="css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />
- <!--[if IE]>
-<link href="css/stylesheet-IE.css" rel="stylesheet" type="text/css" />
-<![endif]-->
-
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/jquery.datepicker.js"></script>
-<script type="text/javascript" src="js/jquery.tools.min.js"></script> 
-
+  <meta charset="utf-8" />
+  <title> Recon Reloaded </title>
+  <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="themes/jquery-ui-1.10.3.dotluv/css/jquery-ui-1.10.3.custom.min.css" />
+  <script type="text/javascript" src="themes/jquery-ui-1.10.3.dotluv/js/jquery-1.9.1.js" />
+  <script type="text/javascript" src="themes/jquery-ui-1.10.3.dotluv/js/jquery-ui-1.10.3.custom.min.js" />
 <script> 
 sfHover = function() {
 	var sfEls = document.getElementById("navbar").getElementsByTagName("li");
@@ -129,23 +125,23 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 	$(document).ready(function() {
 	
 		populate  =  <?php echo $populate; ?> +"";
-		$("#datepicker").datepicker();
-		$('.matrix').change(function() {
+		
+		$(document).on("change", '.matrix', function() {
 			theItem		=	$(this).attr('rel');
-			curValue	=	parseFloat($(this).attr('value'));
+			curValue	=	parseFloat($(this).val());
 			curValue	=	Math.round(curValue*100)/100;
 			totalID		=	$("#total"+theItem);
 			totalValue	=	0;
 			errorFound	=	false;
 			$('.matrix').each(function() {
 				if($(this).attr('rel') == theItem) {
-					if (isNaN($(this).attr('value'))) {
+					if (isNaN($(this).val())) {
 						alert ('not a valid number (use the 1.23 format)');
 						$(this).css('background-color','#ffa1a1');
 						$(this).focus();
 						errorFound	=	true;
 					} else {
-						thisValue = parseFloat($(this).attr('value'));	
+						thisValue = parseFloat($(this).val());	
 						totalValue += Math.round(thisValue*100)/100;	
 						$(this).css('background-color','white');
 					}			
@@ -160,23 +156,23 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			}
 		});
 		
-		$('.gc_matrix').change(function() {
+		$(document).on("change", '.gc_matrix', function() {
 			theItem		=	$(this).attr('rel');
-			curValue	=	parseFloat($(this).attr('value'));
+			curValue	=	parseFloat($(this).val());
 			curValue	=	Math.round(curValue*100)/100;
 			totalID		=	$("#gc_total"+theItem);
 			totalValue	=	0;
 			errorFound	=	false;
 			$('.gc_matrix').each(function() {
 				if($(this).attr('rel') == theItem) {
-					if (isNaN($(this).attr('value'))) {
+					if (isNaN($(this).val())) {
 						alert ('not a valid number (use the 1.23 format)');
 						$(this).css('background-color','#ffa1a1');
 						$(this).focus();
 						
 						errorFound	=	true;
 					} else {
-						thisValue = parseFloat($(this).attr('value'));	
+						thisValue = parseFloat($(this).val());	
 						totalValue += Math.round(thisValue*100)/100;	
 						$(this).css('background-color','white');
 					}			
@@ -194,7 +190,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		function calculateGCVariance(theItem) {
 		totalValue		=	parseFloat($("#gc_total"+theItem).text());	
 		totalValue		=	Math.round(totalValue*100)/100;	
-		theRPRO			=	parseFloat($("#gc_rpro"+theItem).attr('value'));
+		theRPRO			=	parseFloat($("#gc_rpro"+theItem).val());
 		theRPRO			=	Math.round(theRPRO*100)/100;
 		variance		=	totalValue - theRPRO;
 			if (variance < 0) {
@@ -210,13 +206,13 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			rPRO			=	0;
 			variance		=	0;
 			$('.'+col).each(function() {
-				totalColValue   +=      parseFloat($(this).attr('value'));
+				totalColValue   +=      parseFloat($(this).val());
 			});
 			$('.gc_totalcol').each(function() {
 				grandTotal	+=	parseFloat($(this).text());
 			});
 			$('.gc_rpro').each(function() {
-				rPRO		+=	parseFloat($(this).attr('value'));
+				rPRO		+=	parseFloat($(this).val());
 			});
 			$('.gc_variance').each(function() {
 				variance	+=	parseFloat($(this).text().substring(2));
@@ -233,15 +229,15 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			}
 		}
 
-		$('.gc_rpro').change(function() {
-			if (isNaN($(this).attr('value'))) {
+		$(document).on("change",'.gc_rpro', function() {
+			if (isNaN($(this).val())) {
 				alert ('not a valid number (use the 1.23 format)');
 				$(this).css('background-color','#ffa1a1');
 				$(this).focus();
 			} else {
 				theItem		=	$(this).attr('rel');
 				totalValue	=	parseFloat($("#gc_total"+theItem).text());
-				theRPRO		=	parseFloat($(this).attr('value'));
+				theRPRO		=	parseFloat($(this).val());
 				variance	=	totalValue - theRPRO;
 				if (variance < 0) {
 					$("#gc_variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
@@ -254,7 +250,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		function calculateVariance(theItem) {
 		totalValue		=	parseFloat($("#total"+theItem).text());	
 		totalValue		=	Math.round(totalValue*100)/100;	
-		theRPRO			=	parseFloat($("#rpro"+theItem).attr('value'));
+		theRPRO			=	parseFloat($("#rpro"+theItem).val());
 		theRPRO			=	Math.round(theRPRO*100)/100;
 		variance		=	totalValue - theRPRO;
 			if (variance < 0) {
@@ -269,13 +265,13 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			rPRO			=	0;
 			variance		=	0;
 			$('.'+col).each(function() {
-				totalColValue   +=      parseFloat($(this).attr('value'));
+				totalColValue   +=      parseFloat($(this).val());
 			});
 			$('.totalcol').each(function() {
 				grandTotal	+=	parseFloat($(this).text());
 			});
 			$('.rpro').each(function() {
-				rPRO		+=	parseFloat($(this).attr('value'));
+				rPRO		+=	parseFloat($(this).val());
 			});
 			$('.variance').each(function() {
 				variance	+=	parseFloat($(this).text().substring(2));
@@ -299,8 +295,8 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		
 		function calculateAll() {
 			$('.matrix').each(function() {
-				if	($(this).attr('value')	== '') {
-					$(this).attr('value','0.00');
+				if	($(this).val()	== '') {
+					$(this).val('0.00');
 				}
 			});
 			calculateTotal(1);
@@ -311,7 +307,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			$('.rpro').each(function() {
 			       theItem		=	$(this).attr('rel');
 			       totalValue	=	parseFloat($("#total"+theItem).text());
-			       theRPRO		=	parseFloat($(this).attr('value'));
+			       theRPRO		=	parseFloat($(this).val());
 			       variance	        =	totalValue - theRPRO;
 			       variance	        =	Math.round(variance*100)/100;
 			       if (variance < 0) {
@@ -323,15 +319,15 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		       }); 
 		}
 		
-		$('.rpro').change(function() {
-			if (isNaN($(this).attr('value'))) {
+		$(document).on("change", '.rpro', function() {
+			if (isNaN($(this).val())) {
 				alert ('not a valid number (use the 1.23 format)');
 				$(this).css('background-color','#ffa1a1');
 				$(this).focus();
 			} else {
 				theItem		=	$(this).attr('rel');
 				totalValue	=	parseFloat($("#total"+theItem).text());
-				theRPRO		=	parseFloat($(this).attr('value'));
+				theRPRO		=	parseFloat($(this).val());
 				variance	=	totalValue - theRPRO;
 				if (variance < 0) {
 					$("#variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
@@ -342,15 +338,15 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			}
 		});
 
-		$('.report_date').change(function() {
-			theDate		=	$(this).attr('value');
-			theStore	=	$('#curstore').attr('value');
+		$(document).on("change", '.report_date', function() {
+			theDate		=	$(this).val();
+			theStore	=	$('#curstore').val();
 			$.ajax({url: "ajax.php", type: "POST", async: false, data:{date: theDate, store: theStore},
 			success: function(data) {	
-				if (data == 'new form') {
+				if (data === 'new form') {
 					if (shown == 0 && populate == 0) {
 						$("#tablediv").css('display','block');
-						$("#tooltip").fadeIn(750).delay(7000).fadeOut(750); //css('display','block');
+						$("#tooltip").fadeIn(750).delay(7000).fadeOut(750);
 						shown = 1;
 					}
 				}
@@ -361,11 +357,9 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			});
 		});
 		var shown = 0;
-		<?php if (!empty($items)) { ?>
-		calculateAll();		
-		<?php } ?>
+		<?php if (!empty($items)) { echo 'calculateAll();'; } ?>
 		
-		$("#service_head_count").blur( function () {
+		$(document).on("blur", "#service_head_count", function () {
 			var rc = false;
 			var v = $("#service_head_count").val();
 			/* force whole or half numbers */
@@ -381,7 +375,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			}
 		});
 		
-		$("#service_labor_completed").blur(function()
+		$(document).on("blur", "#service_labor_completed", function()
 		{
 			setSLCColor();
 		});
@@ -415,7 +409,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		}
 
 
-		$(".submit").click(function()
+		$(document).on("click", ".submit", function()
 		{
 			var dataForm = $("#reconform").serialize();
 			$.ajax({
@@ -451,7 +445,6 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
                                      
                                     });
 				    $('.submit').css("display","none");
-				    //$('.status').css({"background-color":"#33FF00", "display":"block"}).fadeIn('slow').html(response);
 				}
 			});
 			return false;
@@ -483,7 +476,8 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			</ul>
                         <br />
 			<p><b>Date: </b> <input id="datepicker" type="text" class="report_date" name="report_date" value="<?php if (!empty($items)) { echo $items['date'];}?>" /></p>
-                        <br /><br />
+                        <script>$("#datepicker").datepicker();</script>
+			<br /><br />
 		</div>
 		<div style="clear:both;">&nbsp;</div>
 		<div id="tablediv" style="<?php if (!empty($items)) { echo 'display:block'; }?>">
