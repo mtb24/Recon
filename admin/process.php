@@ -1,5 +1,5 @@
 <?php
-include('functions.php');
+include('../configuration.php');
 // Form handling
 	$action	 =  $_POST['action'];
 	

@@ -1,6 +1,7 @@
 <?php
-include('functionsDaily.php');
-// check whether form exist
+include('configuration.php');
+
+// check whether form has already been submitted
 $date	=	$_POST['date'];
 $date	=	explode('-',$date);
 $date	=	$date[2].'-'.$date[0].'-'.$date[1];

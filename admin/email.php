@@ -1,22 +1,9 @@
 <?php
-	include('configuration.php');
+include('../configuration.php');
 	
-	/* Set timezone for date() */
-        date_default_timezone_set('America/Los_Angeles');
-	// connect to the DB
-$mysqli = mysqli_init();
-if (!$mysqli) {
-    die('mysqli_init failed');
-}
+/* Set timezone for date() */
+date_default_timezone_set('America/Los_Angeles');
 
-if (!$mysqli->real_connect($configuration['host'], $configuration['user'], $configuration['pass'], $configuration['db'], $configuration['port'])) {
-    die('Connect Error (' . mysqli_connect_errno() . ') '
-            . mysqli_connect_error());
-}
-
-echo 'Success... ' . $mysqli->host_info . "<br />\n";
-
-echo "Saving data now...<br />\n";
 
 	$store_recipients = array( 1=>'jesse.huselid@mikesbikes.com',
 				   2=>'hank.scholz@mikesbikes.com',
@@ -38,5 +25,5 @@ echo "Saving data now...<br />\n";
         }
         echo "Done";
         
-$mysqli->close();
+
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-include('functions.php');
+include('../configuration.php');
 
 if (empty($_GET['store_id']) || !is_numeric($_GET['store_id'])) {
 	$defaultStore	=	"1";		// default store ID

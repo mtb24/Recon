@@ -1,5 +1,5 @@
 <?php
-include('functionsDaily.php');
+include('configuration.php');
 #######################################################################
 ## This is the processing script for the Nightly Recon submissions   ##
 ##                                                                   ##

@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
 <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.4.custom.css" />
 <link type="text/css" rel="Stylesheet" href="css/jquery.validity.css" />
-<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/jquery-1.10.1.min.js"></script>
 <script type="text/javascript" src="js/jquery.tools.min.js"></script>
 <script type="text/javascript" src="js/jquery.validity.js"></script>
 <script type="text/javascript"> 
@@ -33,7 +33,7 @@
 			curValue = Math.round(curValue*100)/100;
 			
 			$("."+theClass).each(function() {
-				if($(this).attr('rel') == theItem) {
+				if($(this).attr('rel') === theItem) {
 					/* input is not a valid number */
 					if (isNaN(curValue)) {
 						//alert ('not a valid number (use the 1.23 format)');

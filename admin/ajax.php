@@ -1,5 +1,6 @@
 <?php
-include('functions.php');
+include('../configuration.php');
+
 // check whether form exist
 $date	=	$_POST['date'];
 $date	=	explode('/',$date);
