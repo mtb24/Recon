@@ -1,15 +1,40 @@
-<!DOCTYPE HTML>
-<html>
+<?php
+/*****************************************/
+/* Presents a blank or populated form
+/* only allows updating on same day
+/******************************************/
+include('configuration.php');
+// Connect to the DB
+$con = mysql_connect($configuration['host'],$configuration['user'],$configuration['pass']) or die (mysql_error());
+$db  = mysql_select_db($configuration['db'],$con) or die(mysql_error());
+$action = '';
+$header = '';
+date_default_timezone_set('America/Los_Angeles');
+$today  = '"'.date("m-d-Y").'"';
+$store	= $_POST['store'];
+$query	= "select * from headers where date = '$today' and store_id = '$store'";
+$query	= mysql_query($query) or die(mysql_error());
+
+// check whether form has already been submitted and route accordingly
+if (mysql_num_rows($query) == 1) {
+	$header	= mysql_fetch_assoc($query);
+	$header	= $header['id'];
+	$action = 'update';
+} else {
+	$action = 'new';
+}
+?>
+<!doctype html>
+<html lang="en">
 <head>
-<title>MB Nightly Recon</title>
-<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
-<link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.4.custom.css" />
-<link type="text/css" rel="Stylesheet" href="css/jquery.validity.css" />
-<script src="js/jquery-1.10.1.min.js"></script>
-<script type="text/javascript" src="js/jquery.tools.min.js"></script>
-<script type="text/javascript" src="js/jquery.validity.js"></script>
-<script type="text/javascript"> 
+  <title> Recon Reloaded </title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/jquery.validity.css" />
+  <script type="text/javascript" src="js/jquery-1.10.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery.validity.min.js"></script>
+  <script type="text/javascript"> 
 
 	$(document).ready(function() {
 
@@ -19,7 +44,7 @@
                     year = d.getFullYear(),
 		    theDate = month + "-" + day + "-" + year,
 		    errorFound = false;
-                $("#report_date, #date").val(theDate);
+                $("#report_date, #date").val( <?php echo $today; ?> );
                 
                 $(document).on("change", "#store_id", function(){
 			var theStore = $('#store_id option:selected').attr('value');
@@ -182,7 +207,7 @@
 			return s;
 		}
 
-		function validInputs() {
+		function inputsValid() {
 			$.validity.start();
 			$("#employee_name").require("Your name is required!").match(/[0-9a-fA-F ]/);
 			$("#store_id").require("What Store?");
@@ -193,64 +218,32 @@
 		
 		$(document).on("click", ".submit", function() {
 			/* Make sure required form data is present */
-			if (validInputs()) { 
-				/* Make sure form hasn't already been submitted today */
-				$.ajax({url: "ajaxDaily.php",
-				        type: "POST",
-					async: false,
-					data:{date: theDate, store: $('#store_id option:selected').attr('value')},
-				       	success: function(data) {
-						/* If no prior submission for today */
-						if (data == 'new') {
-							/* Submit the form */
-							var dataForm = $("#reconform").serialize();
-							$.ajax({
-								type: "POST",
-								url: "processDaily.php",
-								data: dataForm,
-								success: function(response) {
-									$("p#statusText").html(response);
-									$("#popUpModal").css({border:'10px solid #33AD33',display:'block'});
-									$("#popUpModal").overlay({
-										top: 260,
-										mask: {
-											color: '#99FF99',
-											loadSpeed: 100,
-											opacity: 0.95
-										},
-										// load it immediately after the construction
-										load: true
-									});
-									$('.submit').attr("disabled","true").css("background-color","#33AD33").val("Done!");
-									$(document).on("click", "button.close", function(){
-										$("#popUpModal").css({display:'none'});
-									});
-								}
-							});
-							//return false;
-						} else {
-							/* flag user to show form has already been submitted for today */
-							$("p#statusText").html("Recon already submitted for "+$('#store_id option:selected').text()+" today!");
-							$("#popUpModal").css({border:'10px solid #CD5555',display:'block'});
-							$("#popUpModal").overlay({
-								top: 260,
-								mask: {
-									color: '#99FF99',
-									loadSpeed: 100,
-									opacity: 0.95
-								},
-								// disable this for modal dialog-type of overlays
-								//closeOnClick: true,
-								// load it immediately after the construction
-								load: true
-							});
-							$('.submit').attr("disabled","true").css("background-color","#CD5555").val("Already submitted for today");
-							$(document).on("click", "button.close", function(){
-								$("#popUpModal").css({display:'none'});
-							});
-						}
-					}
-			        });
+			if ( inputsValid() ) { 
+				/* Submit the form */
+				$.ajax({
+					type: "POST",
+					url: "processDaily.php",
+					data: $("#reconform").serialize()
+				})
+				.done(function(response) {
+						$("p#statusText").html(response);
+						$("#popUpModal").css({border:'10px solid #33AD33',display:'block'});
+						$("#popUpModal").overlay({
+							top: 260,
+							mask: {
+								color: '#99FF99',
+								loadSpeed: 100,
+								opacity: 0.95
+							},
+							// load it immediately after the construction
+							load: true
+						});
+						$('.submit').attr("disabled","true").css("background-color","#33AD33").val("Done!");
+						$(document).on("click", "button.close", function(){
+							$("#popUpModal").css({display:'none'});
+						});
+				});
+				//return false;
 			} else {
 				// Some input is not valid
 				$('.submit').css("background-color","#CD5555").val("Please fix errors!");
@@ -262,21 +255,8 @@
 				       "<p class='firstNotice'>NEW FORM! Some things you should know:</p><ul class='firstNoticeList'><li>You cannot change the date</li><li>Store Name is mandatory</li><li>Employee Name is mandatory</li><li>You can tab through the fields for speed!</li></ul>"
 				       );
 		$("#popUpModal").css({border:'10px solid red'});
-
-		//$("#popUpModal").overlay({
-		//	top: 260,
-		//	mask: {
-		//		color: '#99FF99',
-		//		loadSpeed: 100,
-		//		opacity: 0.95
-		//	},
-			// disable this for modal dialog-type of overlays
-		//	closeOnClick: true,
-			// load it immediately after the construction
-		//	load: true
-		//});
         });
-	</script>
+</script>
 </head>
 <body>
         <div id="container">

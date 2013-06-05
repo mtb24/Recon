@@ -1,7 +1,10 @@
 <?php
 
 include('../configuration.php');
-
+include('../functions.php');
+// Connect to the DB
+$con = mysql_connect($configuration['host'],$configuration['user'],$configuration['pass']) or die (mysql_error());
+$db  = mysql_select_db($configuration['db'],$con) or die(mysql_error());
 if (empty($_GET['store_id']) || !is_numeric($_GET['store_id'])) {
 	$defaultStore	=	"1";		// default store ID
 } else {
@@ -24,12 +27,9 @@ if (!empty($_GET['view_id'])) {
 	
 	// Prepare form vars
 	$items['comment']   =	$header['note'];
-	$items['date']	    =	$header['date'];
 	$defaultStore	    =	$header['store_id'];
-	$reportDate	    =	$items['date'];
-	$showdate	    =	explode('-',$reportDate);
-	$showdate	    =	$showdate[1].'/'.$showdate[2].'/'.$showdate[0];
-	$items['date']	    =	$showdate;
+	$showdate	    =	explode('-', $header['date']);
+	$items['date']	    =	$showdate[1].'/'.$showdate[2].'/'.$showdate[0];
 	
 	// Get more info now on all cash items
 	$query		=	"select * from items where header_id = $id";
@@ -39,14 +39,14 @@ if (!empty($_GET['view_id'])) {
 		$name	=	mysql_query($query) or die(mysql_error() . $query);
 		$result	=	mysql_fetch_assoc($name);
 		$name	=	$result['name'];
-		$items[$name][$r['term_num']]	=	$r['amount'];
+		$items[$name][$r['term_num']] = $r['amount'];
 	}
 	foreach($items as $itemname => $array) {
 		$count	=	0;
-		// If there are no amounts in here means there were no 
-		// Transactions saved for this one:
+		// If there are no amounts in here, it means there were no 
+		// transactions saved for this one:
 		if (!is_array($array)) { 
-		$items[$itemname]['total']	=	0;
+		$items[$itemname]['total'] = 0;
 		continue;
 		}
 		
@@ -54,11 +54,19 @@ if (!empty($_GET['view_id'])) {
 			if ($term == 0) continue;
 			$count += $amount;
 		}
-		$items[$itemname]['total']	=	$count;
+		$items[$itemname]['total'] = $count;
 	}
+
+	// grab the checklist items
+	$date = $header['date'];
+	$query	        =	"select * from checklists where store_id = $defaultStore and date = '$date'";
+	$checklist	=	mysql_query($query) or die(mysql_error().$query);
+	$checklist	=	mysql_fetch_assoc($checklist);
 	
 	$populate	=	1;
+	
 } else {
+	
 	$populate	=	0;
 }
 // grab selected store
@@ -103,10 +111,10 @@ $labor_goal = array(
 <head>
   <meta charset="utf-8" />
   <title> Recon Reloaded </title>
-  <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="themes/jquery-ui-1.10.3.dotluv/css/jquery-ui-1.10.3.custom.min.css" />
-  <script type="text/javascript" src="themes/jquery-ui-1.10.3.dotluv/js/jquery-1.9.1.js" />
-  <script type="text/javascript" src="themes/jquery-ui-1.10.3.dotluv/js/jquery-ui-1.10.3.custom.min.js" />
+  <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+  <link rel="stylesheet" type="text/css" href="../css/jquery-ui-1.10.3.custom.min.css" />
+  <script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+  <script type="text/javascript" src="../js/jquery-ui-1.10.3.custom.min.js"></script>
 <script> 
 sfHover = function() {
 	var sfEls = document.getElementById("navbar").getElementsByTagName("li");
@@ -124,6 +132,8 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 <script> 
 	$(document).ready(function() {
 	
+			
+                $("#datepicker").datepicker();
 		populate  =  <?php echo $populate; ?> +"";
 		
 		$(document).on("change", '.matrix', function() {
@@ -341,8 +351,8 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		$(document).on("change", '.report_date', function() {
 			theDate		=	$(this).val();
 			theStore	=	$('#curstore').val();
-			$.ajax({url: "ajax.php", type: "POST", async: false, data:{date: theDate, store: theStore},
-			success: function(data) {	
+			$.ajax({url: "update.php", type: "POST", async: false, data:{date: theDate, store: theStore}})
+			.done(function(data) {
 				if (data === 'new form') {
 					if (shown == 0 && populate == 0) {
 						$("#tablediv").css('display','block');
@@ -353,7 +363,6 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 				else {
 					 location="admin.php?view_id="+data;
 				}
-			}
 			});
 		});
 		var shown = 0;
@@ -476,7 +485,6 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			</ul>
                         <br />
 			<p><b>Date: </b> <input id="datepicker" type="text" class="report_date" name="report_date" value="<?php if (!empty($items)) { echo $items['date'];}?>" /></p>
-                        <script>$("#datepicker").datepicker();</script>
 			<br /><br />
 		</div>
 		<div style="clear:both;">&nbsp;</div>
@@ -500,7 +508,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 					<?php $totals = 0; ?>
 						<tr>
 							<td width="150"><strong><?php echo $r['name']; ?></strong></td>
-							<?php $r['newname'] = friendly_seo_string($r['name']); ?>
+							<?php $r['newname'] = friendly_string($r['name']); ?>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { 
 							if(($r['newname'] == 'paper-checks' || $r['newname'] == 'cash') && $i > 1) { ?>
 								<td width="80"></td>
@@ -534,7 +542,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 					<?php while ($gc = mysql_fetch_assoc($giftcards) ) { ?>
 					        <tr>
 							<td width="150"><strong><?php echo $gc['name']; ?></strong></td>
-							<?php $gc['newname'] = friendly_seo_string($gc['name']); ?>
+							<?php $gc['newname'] = friendly_string($gc['name']); ?>
 							<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
 							    <td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "gc_matrix ".$i;?>" rel="<?php echo $gc['newname']; ?>" name="item[<?php echo $gc['name'];?>][]" type="text" size="8" value="<?php if (!empty($items)) { if (!empty($items[$gc['name']][$i])) {echo $items[$gc['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
 						        <?php } ?>
