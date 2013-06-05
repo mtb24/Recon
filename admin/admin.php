@@ -495,12 +495,12 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 						<tr>
 						<td width="150">&nbsp;</td>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
-							<td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">Term <?php echo $i;?></td>
+							<td width="auto" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">Term <?php echo $i;?></td>
 						<?php } ?>
-						<td width="80">&nbsp;</td>
-						<td width="80" >Totals</td>
-						<td width="80" >RPro</td>
-						<td width="80" >Variance</td>
+						<td width="auto">&nbsp;</td>
+						<td width="auto" >Totals</td>
+						<td width="auto" >RPro</td>
+						<td width="auto" >Variance</td>
 						</tr> 
 					</thead>
 					<tbody> 
@@ -511,31 +511,31 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 							<?php $r['newname'] = friendly_string($r['name']); ?>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { 
 							if(($r['newname'] == 'paper-checks' || $r['newname'] == 'cash') && $i > 1) { ?>
-								<td width="80"></td>
+								<td width="auto"></td>
 							<?php continue; } else { ?> 
-							<td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8"
+							<td width="auto" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8"
 							value="<?php if (!empty($items)) {echo $items[$r['name']][$i]; } else { echo '0.00';}?>" /></td>
 							<?php continue; }	?>
-							<td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8" 
+							<td width="auto" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8" 
 							value="<?php if (!empty($items)) { if (!empty($items[$r['name']][$i])) {echo $items[$r['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
 						<?php } ?>
-							<td width="80" align="right">$</td>
-							<td width="80" class="totalcol" id="total<?php echo $r['newname'];?>"><?php if (!empty($items)) { if(!empty($items[$r['name']]['total'])) { echo $items[$r['name']]['total']; } else { echo '0.00';} } else { echo '0.00';}?></td>
-							<td width="80" >$<input id="rpro<?php echo $r['newname'];?>" name="rpro[<?php echo $r['name'];?>]" class="rpro" rel="<?php echo $r['newname'];?>" type="text" size="8"
+							<td width="auto" align="right">$</td>
+							<td width="auto" class="totalcol" id="total<?php echo $r['newname'];?>"><?php if (!empty($items)) { if(!empty($items[$r['name']]['total'])) { echo $items[$r['name']]['total']; } else { echo '0.00';} } else { echo '0.00';}?></td>
+							<td width="auto" >$<input id="rpro<?php echo $r['newname'];?>" name="rpro[<?php echo $r['name'];?>]" class="rpro" rel="<?php echo $r['newname'];?>" type="text" size="8"
 							value="<?php if (!empty($items)) { if($items[$r['name']][0] != '') { echo $items[$r['name']][0]; } else { echo '0.00';}}else{echo '0.00';}?>" /></td>
-							<td width="80" id="variance<?php echo $r['newname'];?>" class="variance">$ 0.00</td>						
+							<td width="auto" id="variance<?php echo $r['newname'];?>" class="variance">$ 0.00</td>						
 						</tr>
 					<?php  } ?>
 						<tr><td colspan="7"><hr style="width:95%;" /></td></tr>
 						<tr class="totals">
 							<td width="150"><strong>TOTALS</strong></td>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
-							<td id="total<?php echo $i;?>" width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$ 0.00<input type="hidden" class="matrix" rel="thetotal" name="total[term<?php echo $i;?>]" /></td>
+							<td id="total<?php echo $i;?>" width="auto" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$ 0.00<input type="hidden" class="matrix" rel="thetotal" name="total[term<?php echo $i;?>]" /></td>
 						<?php } ?>
-							<td width="80" align="right">$</td>
-							<td width="80" id="totalthetotal">0.00</td>
-							<td width="80" id="rprototal">$ 0.00</td>
-							<td width="80" id="variancethetotal">$ 0.00</td>						
+							<td width="auto" align="right">$</td>
+							<td width="auto" id="totalthetotal">0.00</td>
+							<td width="auto" id="rprototal">$ 0.00</td>
+							<td width="auto" id="variancethetotal">$ 0.00</td>						
 						</tr>
 						<tr><td colspan=8>&nbsp;</td></tr>
 
@@ -544,12 +544,12 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 							<td width="150"><strong><?php echo $gc['name']; ?></strong></td>
 							<?php $gc['newname'] = friendly_string($gc['name']); ?>
 							<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
-							    <td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "gc_matrix ".$i;?>" rel="<?php echo $gc['newname']; ?>" name="item[<?php echo $gc['name'];?>][]" type="text" size="8" value="<?php if (!empty($items)) { if (!empty($items[$gc['name']][$i])) {echo $items[$gc['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
+							    <td width="auto" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "gc_matrix ".$i;?>" rel="<?php echo $gc['newname']; ?>" name="item[<?php echo $gc['name'];?>][]" type="text" size="8" value="<?php if (!empty($items)) { if (!empty($items[$gc['name']][$i])) {echo $items[$gc['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
 						        <?php } ?>
-							<td width="80" align="right">$</td>
-							<td width="80" class="gc_totalcol" id="gc_total<?php echo $gc['newname'];?>"><?php if (!empty($items)) { if(!empty($items[$gc['name']]['total'])) { echo $items[$gc['name']]['total']; } else { echo '0.00';} } else { echo '0.00';}?></td>
-							<td width="80" >$<input id="gc_rpro<?php echo $gc['newname'];?>" name="gc_rpro[<?php echo $gc['name'];?>]" class="gc_rpro" rel="<?php echo $gc['newname'];?>" type="text" size="8" value="<?php if (!empty($items)) { if($items[$gc['name']][0] != '') { echo $items[$gc['name']][0]; } else { echo '0.00';}}else{echo '0.00';}?>" /></td>
-							<td width="80" id="gc_variance<?php echo $gc['newname'];?>" class="gc_variance">$ 0.00</td>						
+							<td width="auto" align="right">$</td>
+							<td width="auto" class="gc_totalcol" id="gc_total<?php echo $gc['newname'];?>"><?php if (!empty($items)) { if(!empty($items[$gc['name']]['total'])) { echo $items[$gc['name']]['total']; } else { echo '0.00';} } else { echo '0.00';}?></td>
+							<td width="auto" >$<input id="gc_rpro<?php echo $gc['newname'];?>" name="gc_rpro[<?php echo $gc['name'];?>]" class="gc_rpro" rel="<?php echo $gc['newname'];?>" type="text" size="8" value="<?php if (!empty($items)) { if($items[$gc['name']][0] != '') { echo $items[$gc['name']][0]; } else { echo '0.00';}}else{echo '0.00';}?>" /></td>
+							<td width="auto" id="gc_variance<?php echo $gc['newname'];?>" class="gc_variance">$ 0.00</td>						
 						</tr>
 					
 					<?php } ?>
