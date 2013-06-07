@@ -493,113 +493,105 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 				<table id="table" style="width:90%" style="float:left;margin-left:50px;">
 					<thead>
 						<tr>
-						<td width="150">&nbsp;</td>
+						<td width="auto">&nbsp;</td>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
-							<td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">Term <?php echo $i;?></td>
+							<td width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">Actuals</td>
 						<?php } ?>
-						<td width="80">&nbsp;</td>
-						<td width="80" >Totals</td>
-						<td width="80" >RPro</td>
-						<td width="80" >Variance</td>
+						<td width="auto" >RPro</td>
+						<td width="auto" >Variance</td>
 						</tr> 
 					</thead>
 					<tbody> 
 					<?php while ($r	= mysql_fetch_assoc($allTypes) ) { ?>
 					<?php $totals = 0; ?>
 						<tr>
-							<td width="150"><strong><?php echo $r['name']; ?></strong></td>
+							<td width="auto"><strong><?php echo $r['name']; ?></strong></td>
 							<?php $r['newname'] = friendly_string($r['name']); ?>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { 
 							if(($r['newname'] == 'paper-checks' || $r['newname'] == 'cash') && $i > 1) { ?>
-								<td width="80"></td>
+								<td width="auto"></td>
 							<?php continue; } else { ?> 
-							<td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8"
+							<td width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8"
 							value="<?php if (!empty($items)) {echo $items[$r['name']][$i]; } else { echo '0.00';}?>" /></td>
 							<?php continue; }	?>
-							<td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8" 
+							<td width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8" 
 							value="<?php if (!empty($items)) { if (!empty($items[$r['name']][$i])) {echo $items[$r['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
 						<?php } ?>
-							<td width="80" align="right">$</td>
-							<td width="80" class="totalcol" id="total<?php echo $r['newname'];?>"><?php if (!empty($items)) { if(!empty($items[$r['name']]['total'])) { echo $items[$r['name']]['total']; } else { echo '0.00';} } else { echo '0.00';}?></td>
-							<td width="80" >$<input id="rpro<?php echo $r['newname'];?>" name="rpro[<?php echo $r['name'];?>]" class="rpro" rel="<?php echo $r['newname'];?>" type="text" size="8"
+							<td width="auto" >$<input id="rpro<?php echo $r['newname'];?>" name="rpro[<?php echo $r['name'];?>]" class="rpro" rel="<?php echo $r['newname'];?>" type="text" size="8"
 							value="<?php if (!empty($items)) { if($items[$r['name']][0] != '') { echo $items[$r['name']][0]; } else { echo '0.00';}}else{echo '0.00';}?>" /></td>
-							<td width="80" id="variance<?php echo $r['newname'];?>" class="variance">$ 0.00</td>						
+							<td width="auto" id="variance<?php echo $r['newname'];?>" class="variance">$ 0.00</td>						
 						</tr>
 					<?php  } ?>
-						<tr><td colspan="7"><hr style="width:95%;" /></td></tr>
+						<tr><td colspan="5"><hr style="width:95%;" /></td></tr>
 						<tr class="totals">
-							<td width="150"><strong>TOTALS</strong></td>
+							<td width="auto"><strong>TOTALS</strong></td>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
-							<td id="total<?php echo $i;?>" width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$ 0.00<input type="hidden" class="matrix" rel="thetotal" name="total[term<?php echo $i;?>]" /></td>
+							<td id="total<?php echo $i;?>" width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">$ 0.00<input type="hidden" class="matrix" rel="thetotal" name="total[term<?php echo $i;?>]" /></td>
 						<?php } ?>
-							<td width="80" align="right">$</td>
-							<td width="80" id="totalthetotal">0.00</td>
-							<td width="80" id="rprototal">$ 0.00</td>
-							<td width="80" id="variancethetotal">$ 0.00</td>						
+							<td width="auto" id="rprototal">$ 0.00</td>
+							<td width="auto" id="variancethetotal">$ 0.00</td>						
 						</tr>
-						<tr><td colspan=8>&nbsp;</td></tr>
+						<tr><td colspan=5>&nbsp;</td></tr>
 
 					<?php while ($gc = mysql_fetch_assoc($giftcards) ) { ?>
 					        <tr>
-							<td width="150"><strong><?php echo $gc['name']; ?></strong></td>
+							<td width="auto"><strong><?php echo $gc['name']; ?></strong></td>
 							<?php $gc['newname'] = friendly_string($gc['name']); ?>
 							<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
-							    <td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "gc_matrix ".$i;?>" rel="<?php echo $gc['newname']; ?>" name="item[<?php echo $gc['name'];?>][]" type="text" size="8" value="<?php if (!empty($items)) { if (!empty($items[$gc['name']][$i])) {echo $items[$gc['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
+							    <td width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">$<input class="<?php echo "gc_matrix ".$i;?>" rel="<?php echo $gc['newname']; ?>" name="item[<?php echo $gc['name'];?>][]" type="text" size="8" value="<?php if (!empty($items)) { if (!empty($items[$gc['name']][$i])) {echo $items[$gc['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
 						        <?php } ?>
-							<td width="80" align="right">$</td>
-							<td width="80" class="gc_totalcol" id="gc_total<?php echo $gc['newname'];?>"><?php if (!empty($items)) { if(!empty($items[$gc['name']]['total'])) { echo $items[$gc['name']]['total']; } else { echo '0.00';} } else { echo '0.00';}?></td>
-							<td width="80" >$<input id="gc_rpro<?php echo $gc['newname'];?>" name="gc_rpro[<?php echo $gc['name'];?>]" class="gc_rpro" rel="<?php echo $gc['newname'];?>" type="text" size="8" value="<?php if (!empty($items)) { if($items[$gc['name']][0] != '') { echo $items[$gc['name']][0]; } else { echo '0.00';}}else{echo '0.00';}?>" /></td>
-							<td width="80" id="gc_variance<?php echo $gc['newname'];?>" class="gc_variance">$ 0.00</td>						
+							<td width="auto" >$<input id="gc_rpro<?php echo $gc['newname'];?>" name="gc_rpro[<?php echo $gc['name'];?>]" class="gc_rpro" rel="<?php echo $gc['newname'];?>" type="text" size="8" value="<?php if (!empty($items)) { if($items[$gc['name']][0] != '') { echo $items[$gc['name']][0]; } else { echo '0.00';}}else{echo '0.00';}?>" /></td>
+							<td width="auto" id="gc_variance<?php echo $gc['newname'];?>" class="gc_variance">$ 0.00</td>						
 						</tr>
 					
 					<?php } ?>
 					</tbody>
 				</table>
-					<div style="clear:both;"></div>
-					<div id="textboxes">
-						<div class="float_left">
-							<h2>Comments:</h2>
-							<textarea rows="8" cols="45" name="comment"><?php if (!empty($items)) { echo $header['note']; }  ?></textarea>
-						</div>
-						<div class="float_right">
-							<h2>Huddle Topic:</h2>
-							<textarea rows="8" cols="45" name="huddle"><?php if (!empty($items)) { echo $checklist['huddle_topic']; } ?></textarea>
-							<br />
-						</div>
+				<div style="clear:both;"></div>
+				<div id="textboxes">
+					<div class="float_left">
+						<h2>Comments:</h2>
+						<textarea rows="8" cols="45" name="comment"><?php if (!empty($items)) { echo $header['note']; }  ?></textarea>
 					</div>
-					<div style="clear:both;"></div>
-					<div id="restoptions">
-						<table style="text-align:center;margin-left:80px;">
-							<tr>
-								<td align="center" style="width:250px;">
-									<label>Service Head count </label><br /><span id="shc_formError"></span>
-									<input type="text" size="15" name="headcount" id="service_head_count" value="<?php if (!empty($items)) { echo $checklist['service_head_count']; } ?>" />
-								</td>
-								<td align="center" style="width:250px;">
-									<label>Service Labor completed:</label><br />
-									<input type="text" size="15" name="labor_completed" id="service_labor_completed" value="<?php if (!empty($items)) { echo $checklist['service_labor_completed']; } ?>" />
-								</td>
-								<td align="center" style="width:250px;">
-									<label>Service Labor goal</label><br />
-									<input readonly type="text" size="15" name="laborgoal" id="service_labor_goal" value="<?php if (!empty($items)) { echo $checklist['service_head_count'] * 200; } ?>" />
-								</td>
-							</tr>
-						</table>
+					<div class="float_right">
+						<h2>Huddle Topic:</h2>
+						<textarea rows="8" cols="45" name="huddle"><?php if (!empty($items)) { echo $checklist['huddle_topic']; } ?></textarea>
+						<br />
 					</div>
-					<div id="checkboxes" style="text-align:center;">
-						<table cellspacing="10" width="100%">
-							<tr align="center">
-								<td><label>A/C Off</label><br /><input type="checkbox" name="close_ac" <?php if (!empty($items)) { if ($checklist['ac_off'] == 1) { echo 'checked="checked"';} }?> /></td>
-								<td><label>A/V Off</label><br /><input type="checkbox" name="close_av"  <?php if (!empty($items)) { if ($checklist['av_off'] == 1) { echo 'checked="checked"';} }?>/></td>
-								<td><label>Close RPro</label><br /><input type="checkbox" name="close_rpro"  <?php if (!empty($items)) { if ($checklist['close_rpro'] == 1) { echo 'checked="checked"';} }?>/></td>
-								<td width="180"><input type="checkbox" name="bike_sales_reviewed"  <?php if (!empty($items)) { if ($checklist['bike_sales_reviewed'] == 1) { echo 'checked="checked"';} }?>/><label> Today's bike sales reviewed?</label></td>
-								<td width="180"><input type="checkbox" name="bike_receipts_accurate"  <?php if (!empty($items)) { if ($checklist['bike_receipts_accurate'] == 1) { echo 'checked="checked"';} }?>/><label> Reviewed all bike receipts for accuracy?</label></td>
-							</tr>
-						</table>
-					</div>
-					<p id="reportedBy"><b>Reported By:&nbsp;&nbsp;&nbsp;</b> <input type="text" size="20" name="username" id="employee_name" class="validate[required,custom[onlyLetterNumber]]" data-prompt-position="centerRight" value="<?php if (!empty($items)) { echo $header['employee_name']; }?>" /></p>
-					<div class="status"></div>
-					<input id="submit_recon" class="submit" type="button" value="<? if (!empty($items)) { echo 'Update report';} else { echo 'Submit report'; }?>" />
+				</div>
+				<div style="clear:both;"></div>
+				<div id="restoptions">
+					<table style="text-align:center;margin-left:80px;">
+						<tr>
+							<td align="center" style="width:250px;">
+								<label>Service Head count </label><br /><span id="shc_formError"></span>
+								<input type="text" size="15" name="headcount" id="service_head_count" value="<?php if (!empty($items)) { echo $checklist['service_head_count']; } ?>" />
+							</td>
+							<td align="center" style="width:250px;">
+								<label>Service Labor completed:</label><br />
+								<input type="text" size="15" name="labor_completed" id="service_labor_completed" value="<?php if (!empty($items)) { echo $checklist['service_labor_completed']; } ?>" />
+							</td>
+							<td align="center" style="width:250px;">
+								<label>Service Labor goal</label><br />
+								<input readonly type="text" size="15" name="laborgoal" id="service_labor_goal" value="<?php if (!empty($items)) { echo $checklist['service_head_count'] * 200; } ?>" />
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div id="checkboxes" style="text-align:center;">
+					<table cellspacing="10" width="100%">
+						<tr align="center">
+							<td><label>A/C Off</label><br /><input type="checkbox" name="close_ac" <?php if (!empty($items)) { if ($checklist['ac_off'] == 1) { echo 'checked="checked"';} }?> /></td>
+							<td><label>A/V Off</label><br /><input type="checkbox" name="close_av"  <?php if (!empty($items)) { if ($checklist['av_off'] == 1) { echo 'checked="checked"';} }?>/></td>
+							<td><label>Close RPro</label><br /><input type="checkbox" name="close_rpro"  <?php if (!empty($items)) { if ($checklist['close_rpro'] == 1) { echo 'checked="checked"';} }?>/></td>
+							<td width="180"><input type="checkbox" name="bike_sales_reviewed"  <?php if (!empty($items)) { if ($checklist['bike_sales_reviewed'] == 1) { echo 'checked="checked"';} }?>/><label> Today's bike sales reviewed?</label></td>
+							<td width="180"><input type="checkbox" name="bike_receipts_accurate"  <?php if (!empty($items)) { if ($checklist['bike_receipts_accurate'] == 1) { echo 'checked="checked"';} }?>/><label> Reviewed all bike receipts for accuracy?</label></td>
+						</tr>
+					</table>
+				</div>
+				<p id="reportedBy"><b>Reported By:&nbsp;&nbsp;&nbsp;</b> <input type="text" size="20" name="username" id="employee_name" class="validate[required,custom[onlyLetterNumber]]" data-prompt-position="centerRight" value="<?php if (!empty($items)) { echo $header['employee_name']; }?>" /></p>
+				<div class="status"></div>
+				<input id="submit_recon" class="submit" type="button" value="<? if (!empty($items)) { echo 'Update report';} else { echo 'Submit report'; }?>" />
 		</div>
             </form>
     </div>
