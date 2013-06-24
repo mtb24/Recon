@@ -198,9 +198,9 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		theRPRO			=	Math.round(theRPRO*100)/100;
 		variance		=	totalValue - theRPRO;
 			if (variance < 0) {
-				$("#gc_variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+				$("#gc_variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 			} else {
-				$("#gc_variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+				$("#gc_variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 			}
 		}
 		
@@ -227,9 +227,9 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			variance		=	Math.round(variance*100)/100;
 
 			if (variance < 0) {
-				$("#gc_variancethetotal").html('<font color="red"><b>$ '+variance+'</b></font>');
+				$("#gc_variancethetotal").html('<span class="input_error">$ '+variance+'</span>');
 			} else {
-				$("#gc_variancethetotal").html('<font color="black"><b>$ '+variance+'</b></font>');
+				$("#gc_variancethetotal").html('<span class="input_valid">$ '+variance+'</span>');
 			}
 		}
 
@@ -244,9 +244,9 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 				theRPRO		=	parseFloat($(this).attr('value'));
 				variance	=	totalValue - theRPRO;
 				if (variance < 0) {
-					$("#gc_variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+					$("#gc_variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 				} else {
-					$("#gc_variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+					$("#gc_variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 				}
 			}
 		});
@@ -258,9 +258,9 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		theRPRO			=	Math.round(theRPRO*100)/100;
 		variance		=	totalValue - theRPRO;
 			if (variance < 0) {
-				$("#variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+				$("#variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 			} else {
-				$("#variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+				$("#variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 			}
 		}
 		function calculateTotal(col) {
@@ -290,9 +290,9 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			$('#rprototal').text('$ '+rPRO);
 			//$('#variancethetotal').text('$ '+variance);
 			if (variance < 0) {
-				$("#variancethetotal").html('<font color="red"><b>$ '+variance+'</b></font>');
+				$("#variancethetotal").html('<span class="input_error">$ '+variance+'</span>');
 			} else {
-				$("#variancethetotal").html('<font color="black"><b>$ '+variance+'</b></font>');
+				$("#variancethetotal").html('<span class="input_valid">$ '+variance+'</span>');
 			}
 		}
 		
@@ -315,9 +315,9 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			       variance	        =	totalValue - theRPRO;
 			       variance	        =	Math.round(variance*100)/100;
 			       if (variance < 0) {
-				       $("#variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+				       $("#variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 			       } else {
-				       $("#variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+				       $("#variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 			       }
 			       calculateTotal(1);
 		       }); 
@@ -334,9 +334,9 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 				theRPRO		=	parseFloat($(this).attr('value'));
 				variance	=	totalValue - theRPRO;
 				if (variance < 0) {
-					$("#variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+					$("#variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 				} else {
-					$("#variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+					$("#variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 				}
 				calculateTotal(1);
 			}
