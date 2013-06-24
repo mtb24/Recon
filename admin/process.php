@@ -14,15 +14,10 @@ include('functions.php');
 		$date		=	explode('/',$date);
 		$date		=	$date[2].'-'.$date[0].'-'.$date[1];
 		$comment	=	mysql_real_escape_string($_POST['comment']);
-		$username		=	mysql_real_escape_string($_POST['username']);	
-		//	if(empty($userid)) {
-				// to make compatible with old database tables
-		//		$userid	=	0;
-		//	}
+		$username	=	mysql_real_escape_string($_POST['username']);	
 		$header_id	=	$_POST['headers_id'];
-		//$checklist_id	=	$_POST['checklist_id'];
+
 		// Let's update the header table:
-		
 		$query	=	"Update headers SET
 						employee_name = '$username',
 						note = '$comment',
@@ -40,9 +35,7 @@ include('functions.php');
 			
 			foreach($theArray as $term => $cash) {
 					// First see whether there is already an entry for this datatype
-					// Compatibility with old forms <..
 					$realterm = $term+1;
-					
 					$query	=	"Select * from items  WHERE header_id = $header_id 
 											AND  term_num = $realterm
 											AND  itemtype_id = $itemID";
@@ -75,10 +68,6 @@ include('functions.php');
 			$query	=	mysql_fetch_assoc($query);
 			$itemID	=	$query['id'];
 			$term	=	0;
-			
-			// compatibility with old form:
-			// 	->	Check if RPRO value exists, if not add it.
-			
 			$query	=	"Select * from items  WHERE header_id = $header_id 
 								AND term_num = $term
 								AND itemtype_id = $itemID";
@@ -106,40 +95,10 @@ include('functions.php');
 		$huddle	         =	mysql_real_escape_string($_POST['huddle']);
 		$headcount	 =	$_POST['headcount'];
 		$labor_completed =	$_POST['labor_completed'];
-		if (empty($_POST['close_ac'])) {
-		$ac	=	0;
-		} else {
-		$ac	=	1;
-		}
-		if (empty($_POST['close_av'])) {
-		$av	=	0;
-		} else {
-		$av	=	1;
-		}
-		if (empty($_POST['close_rpro'])) {
-		$rproclose	=	0;
-		} else {
-		$rproclose	=	1;
-		}
-		if (empty($_POST['bike_sales_reviewed'])) {
-		$bike_sales_reviewed	=	0;
-		} else {
-		$bike_sales_reviewed	=	1;
-		}
-		if (empty($_POST['bike_receipts_accurate'])) {
-		$bike_receipts_accurate	=	0;
-		} else {
-		$bike_receipts_accurate	=	1;
-		}
 		$query	=	"Update checklists SET
 						huddle_topic            = '$huddle',
 						service_head_count      = '$headcount',
-						service_labor_completed = '$labor_completed',
-						ac_off	                = '$ac',
-						av_off	                = '$av',
-						close_rpro	        = '$rproclose',
-						bike_sales_reviewed     = '$bike_sales_reviewed',
-						bike_receipts_accurate  = '$bike_receipts_accurate'
+						service_labor_completed = '$labor_completed'
 					WHERE
 						store_id	=	$store
 					AND
@@ -197,44 +156,14 @@ include('functions.php');
 		$huddle	           =   mysql_real_escape_string($_POST['huddle']);
 		$headcount	   =   $_POST['headcount'];
 		$labor_completed   =   $_POST['labor_completed'];
-		if (empty($_POST['close_ac'])) {
-		$ac	=	0;
-		} else {
-		$ac	=	1;
-		}
-		if (empty($_POST['close_av'])) {
-		$av	=	0;
-		} else {
-		$av	=	1;
-		}
-		if (empty($_POST['close_rpro'])) {
-		$rproclose	=	0;
-		} else {
-		$rproclose	=	1;
-		}
-		if (empty($_POST['bike_sales_reviewed'])) {
-		$bike_sales_reviewed	=	0;
-		} else {
-		$bike_sales_reviewed	=	1;
-		}
-		if (empty($_POST['bike_receipts_accurate'])) {
-		$bike_receipts_accurate	=	0;
-		} else {
-		$bike_receipts_accurate	=	1;
-		}
-
 		$query	=   "INSERT INTO `recon`.`checklists` (
 							`store_id` ,
 							`date` ,
 							`huddle_topic` ,
 							`service_head_count` ,
-							`service_labor_completed` ,
-							`ac_off` ,
-							`av_off` ,
-							`close_rpro`,
-							`bike_sales_reviewed`,
-							`bike_receipts_accurate`)
-						VALUES ('$store', '$date', '$huddle' , '$headcount' , '$labor_completed' , $ac , $av , $rproclose, $bike_sales_reviewed, $bike_receipts_accurate)";
+							`service_labor_completed`
+							)
+						VALUES ('$store', '$date', '$huddle' , '$headcount' , '$labor_completed')";
 		$run	        =	mysql_query($query);
 		$checklist	=	mysql_insert_id();
 

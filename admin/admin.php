@@ -584,17 +584,6 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 							</tr>
 						</table>
 					</div>
-					<div id="checkboxes" style="text-align:center;">
-						<table cellspacing="10" width="100%">
-							<tr align="center">
-								<td><label>A/C Off</label><br /><input type="checkbox" name="close_ac" <?php if (!empty($items)) { if ($checklist['ac_off'] == 1) { echo 'checked="checked"';} }?> /></td>
-								<td><label>A/V Off</label><br /><input type="checkbox" name="close_av"  <?php if (!empty($items)) { if ($checklist['av_off'] == 1) { echo 'checked="checked"';} }?>/></td>
-								<td><label>Close RPro</label><br /><input type="checkbox" name="close_rpro"  <?php if (!empty($items)) { if ($checklist['close_rpro'] == 1) { echo 'checked="checked"';} }?>/></td>
-								<td width="180"><input type="checkbox" name="bike_sales_reviewed"  <?php if (!empty($items)) { if ($checklist['bike_sales_reviewed'] == 1) { echo 'checked="checked"';} }?>/><label> Today's bike sales reviewed?</label></td>
-								<td width="180"><input type="checkbox" name="bike_receipts_accurate"  <?php if (!empty($items)) { if ($checklist['bike_receipts_accurate'] == 1) { echo 'checked="checked"';} }?>/><label> Reviewed all bike receipts for accuracy?</label></td>
-							</tr>
-						</table>
-					</div>
 					<p id="reportedBy"><b>Reported By:&nbsp;&nbsp;&nbsp;</b> <input type="text" size="20" name="username" id="employee_name" class="validate[required,custom[onlyLetterNumber]]" data-prompt-position="centerRight" value="<?php if (!empty($items)) { echo $header['employee_name']; }?>" /></p>
 					<div class="status"></div>
 					<input id="submit_recon" class="submit" type="button" value="<? if (!empty($items)) { echo 'Update report';} else { echo 'Submit report'; }?>" />

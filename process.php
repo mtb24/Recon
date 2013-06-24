@@ -1,13 +1,16 @@
 <?php
-include('functionsDaily.php');
+include('configuration.php');
+include('functions.php');
+$con = mysql_connect($configuration['host'],$configuration['user'],$configuration['pass']) or die (mysql_error());
+$db  = mysql_select_db($configuration['db'],$con) or die(mysql_error());
 #######################################################################
 ## This is the processing script for the Nightly Recon submissions   ##
-##                                                                   ##
+##
+## ToDo: eliminate DB selects for each item - do once
 #######################################################################
 
-	$store		 = $_POST['store_id'];
-	$date		 = $_POST['date'];
-	$date		 = explode('-',$date);
+	$store		 = $_POST['store'];
+	$date		 = explode('-', $_POST['date']);
 	$date		 = $date[2].'-'.$date[0].'-'.$date[1];
 	$username	 = mysql_real_escape_string($_POST['username']);
 	$comment	 = mysql_real_escape_string($_POST['comment']);
@@ -21,7 +24,7 @@ include('functionsDaily.php');
 	$checklistID     = '';
 	
 	// Insert headers
-	$query	=	"Insert into headers (store_id,date,employee_name,note,update_ts) 
+	$query = "Insert into headers (store_id,date,employee_name,note,update_ts) 
 				      VALUES ($store,'$date','$username','$comment',NOW() )";
 	mysql_query($query) or die(mysql_error().' error: '.$query);
 	$headerID	=	mysql_insert_id();
@@ -56,7 +59,7 @@ include('functionsDaily.php');
 		$query	=	mysql_query($query);
 		$query	=	mysql_fetch_assoc($query);
 		$itemID	=	$query['id'];
-		$term	=	1;
+		$term	=	0;
 		$query	=	"insert into items (header_id,term_num,itemtype_id,amount,update_ts) 
 					    VALUES ('$headerID','$term','$itemID','$gc_rpro_value',NOW() ) ";
 		$GCrproInsertID = mysql_query($query) or die(mysql_error(). ' error: '.$query);
@@ -72,8 +75,8 @@ include('functionsDaily.php');
 	if ( $headerID && $itemInsertID && $rproInsertID && $GCrproInsertID && $checklistID ) {
 		$query = mysql_query("select name from stores where id = $store");
 		$query = mysql_fetch_assoc($query);
-		echo "Today's Recon successfully submitted for <strong>".$query['name']."</strong>! <br />";
+		echo "<div class=\"alert alert-success\">Today's Recon successfully submitted for <strong>".$query['name']."</strong>!</div>";
 	} else {
-		echo "Uh Oh! Something went wrong.<br />Unable to save tonight's Recon<br />";
+		echo "<div class=\"alert alert-error\">Uh Oh! Something went wrong.<br />Unable to save tonight's Recon</div>";
 	}
 ?>
