@@ -509,7 +509,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 					<?php $totals = 0; ?>
 						<tr>
 							<td width="150"><strong><?php echo $r['name']; ?></strong></td>
-							<?php $r['newname'] = friendly_seo_string($r['name']); ?>
+							<?php $r['newname'] = friendly_string($r['name']); ?>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { 
 							if(($r['newname'] == 'paper-checks' || $r['newname'] == 'cash') && $i > 1) { ?>
 								<td width="80"></td>
@@ -543,7 +543,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 					<?php while ($gc = mysql_fetch_assoc($giftcards) ) { ?>
 					        <tr>
 							<td width="150"><strong><?php echo $gc['name']; ?></strong></td>
-							<?php $gc['newname'] = friendly_seo_string($gc['name']); ?>
+							<?php $gc['newname'] = friendly_string($gc['name']); ?>
 							<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
 							    <td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "gc_matrix ".$i;?>" rel="<?php echo $gc['newname']; ?>" name="item[<?php echo $gc['name'];?>][]" type="text" size="8" value="<?php if (!empty($items)) { if (!empty($items[$gc['name']][$i])) {echo $items[$gc['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
 						        <?php } ?>
