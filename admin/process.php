@@ -1,5 +1,8 @@
 <?php
-include('functions.php');
+include_once('../configuration.php');
+include_once('../functions.php');
+$con = mysql_connect($configuration['host'],$configuration['user'],$configuration['pass']) or die (mysql_error());
+$db  = mysql_select_db($configuration['db'],$con) or die(mysql_error());
 // Form handling
 	$action	 =  $_POST['action'];
 	
