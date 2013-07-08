@@ -4,12 +4,15 @@ $(document).ready(function() {
         
         /* When store selected, query for existing data */
         $(document).on("change", "#store_id", function(){
+            $(".status").empty();
+            $('.submit').prop("disabled",false);
             $.getJSON('update.php', {store:$('#store_id option:selected').val()}, function(data){
                 if (data.action === "new") {
                     /* show blank form */
                     $("#action").val("new");
                     document.getElementById("reconform").reset();
                     $(".variance, #total_actual, #total_rpro").empty();
+                    $(".submit").html("Submit Report");
                 } else {
                     /* it's an update, so populate the form with the data */
                    populate(data);
@@ -28,18 +31,19 @@ $(document).ready(function() {
                 var theClass = $(this).attr('class'),
                     theItem  = $(this).attr('rel'),
                     curValue = Math.round(parseFloat( $(this).val() )*100)/100;
+                    errorFound = false;
+                    $(this).removeClass('input-error');
                 
                 $("."+theClass).each(function() {
                     if($(this).attr('rel') === theItem) {
                         /* value is invalid */
                         if (isNaN(curValue)) {
                             //alert ('not a valid number (use the 1.23 format)');
-                            $(this).toggleClass("input-error");
+                            $(this).addClass("input-error");
                             //$(this).val('').focus();
                             errorFound = true;
                         } else { /* input is valid */
                             /* reset color, if previous error */
-                            $(this).removeClass('input-error');
                             /* populate disabled fields with data */
                             $("input[class='col4'][rel='"+theItem+"']").val( $(this).val() );
                         }
@@ -49,7 +53,7 @@ $(document).ready(function() {
                 /* Make sure name is filled in with valid characters */
                 if( $("input[name='username']").val() == '' || /[^a-zA-Z\s]/.test( $("input[name='username']").val() ) ){
                     errorFound = true;
-                    $("input[name='username']").toggleClass("input-error");
+                    $("input[name='username']").addClass("input-error");
                 }
                 
                 /* if no errors, calculate totals */
@@ -106,7 +110,7 @@ $(document).ready(function() {
             var serviceCompleted = $("#service_labor_completed").val();
             var serviceVariance = (serviceCompleted - serviceGoal);
             if (serviceVariance > 0) {
-                    $("#service_labor_completed").toggleClass("input-error");
+                    $("#service_labor_completed").addClass("input-error");
             }
         });
         

@@ -2,7 +2,7 @@
 
 $host	=	'localhost:8889';
 $user	=	'root';
-$pass	=	'br54!6A';
+$pass	=	'root';
 $db	=	'recon';
 
 $con	=	mysql_connect($host,$user,$pass) or die (mysql_error());
