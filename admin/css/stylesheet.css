@@ -197,6 +197,16 @@ tr.totals
 {
         border: 2px double #000000;
 }
+span.input_error
+{
+        color: red;
+        font-weight: bold;
+}
+span.input_valid
+{
+        color: black;
+        font-weight: bold;
+}
 
 /*************************************************
 *  Begin Expose and tooltip styles

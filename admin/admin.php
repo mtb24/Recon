@@ -1,10 +1,7 @@
 <?php
 
-include('../configuration.php');
-include('../functions.php');
-// Connect to the DB
-$con = mysql_connect($configuration['host'],$configuration['user'],$configuration['pass']) or die (mysql_error());
-$db  = mysql_select_db($configuration['db'],$con) or die(mysql_error());
+include('functions.php');
+
 if (empty($_GET['store_id']) || !is_numeric($_GET['store_id'])) {
 	$defaultStore	=	"1";		// default store ID
 } else {
@@ -27,9 +24,12 @@ if (!empty($_GET['view_id'])) {
 	
 	// Prepare form vars
 	$items['comment']   =	$header['note'];
+	$items['date']	    =	$header['date'];
 	$defaultStore	    =	$header['store_id'];
-	$showdate	    =	explode('-', $header['date']);
-	$items['date']	    =	$showdate[1].'/'.$showdate[2].'/'.$showdate[0];
+	$reportDate	    =	$items['date'];
+	$showdate	    =	explode('-',$reportDate);
+	$showdate	    =	$showdate[1].'/'.$showdate[2].'/'.$showdate[0];
+	$items['date']	    =	$showdate;
 	
 	// Get more info now on all cash items
 	$query		=	"select * from items where header_id = $id";
@@ -39,14 +39,14 @@ if (!empty($_GET['view_id'])) {
 		$name	=	mysql_query($query) or die(mysql_error() . $query);
 		$result	=	mysql_fetch_assoc($name);
 		$name	=	$result['name'];
-		$items[$name][$r['term_num']] = $r['amount'];
+		$items[$name][$r['term_num']]	=	$r['amount'];
 	}
 	foreach($items as $itemname => $array) {
 		$count	=	0;
-		// If there are no amounts in here, it means there were no 
-		// transactions saved for this one:
+		// If there are no amounts in here means there were no 
+		// Transactions saved for this one:
 		if (!is_array($array)) { 
-		$items[$itemname]['total'] = 0;
+		$items[$itemname]['total']	=	0;
 		continue;
 		}
 		
@@ -54,19 +54,11 @@ if (!empty($_GET['view_id'])) {
 			if ($term == 0) continue;
 			$count += $amount;
 		}
-		$items[$itemname]['total'] = $count;
+		$items[$itemname]['total']	=	$count;
 	}
-
-	// grab the checklist items
-	$date = $header['date'];
-	$query	        =	"select * from checklists where store_id = $defaultStore and date = '$date'";
-	$checklist	=	mysql_query($query) or die(mysql_error().$query);
-	$checklist	=	mysql_fetch_assoc($checklist);
 	
 	$populate	=	1;
-	
 } else {
-	
 	$populate	=	0;
 }
 // grab selected store
@@ -105,16 +97,20 @@ $labor_goal = array(
 		    );
 
 ?>
-<!doctype html>
-
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <title> Recon Reloaded </title>
-  <link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
-  <link rel="stylesheet" type="text/css" href="../css/jquery-ui-1.10.3.custom.min.css" />
-  <script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
-  <script type="text/javascript" src="../js/jquery-ui-1.10.3.custom.min.js"></script>
+<title> Recon Reloaded </title>
+<link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
+<link href="css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />
+ <!--[if IE]>
+<link href="css/stylesheet-IE.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.datepicker.js"></script>
+<script type="text/javascript" src="js/jquery.tools.min.js"></script> 
+
 <script> 
 sfHover = function() {
 	var sfEls = document.getElementById("navbar").getElementsByTagName("li");
@@ -132,26 +128,24 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 <script> 
 	$(document).ready(function() {
 	
-			
-                $("#datepicker").datepicker();
 		populate  =  <?php echo $populate; ?> +"";
-		
-		$(document).on("change", '.matrix', function() {
+		$("#datepicker").datepicker();
+		$('.matrix').change(function() {
 			theItem		=	$(this).attr('rel');
-			curValue	=	parseFloat($(this).val());
+			curValue	=	parseFloat($(this).attr('value'));
 			curValue	=	Math.round(curValue*100)/100;
 			totalID		=	$("#total"+theItem);
 			totalValue	=	0;
 			errorFound	=	false;
 			$('.matrix').each(function() {
 				if($(this).attr('rel') == theItem) {
-					if (isNaN($(this).val())) {
+					if (isNaN($(this).attr('value'))) {
 						alert ('not a valid number (use the 1.23 format)');
 						$(this).css('background-color','#ffa1a1');
 						$(this).focus();
 						errorFound	=	true;
 					} else {
-						thisValue = parseFloat($(this).val());	
+						thisValue = parseFloat($(this).attr('value'));	
 						totalValue += Math.round(thisValue*100)/100;	
 						$(this).css('background-color','white');
 					}			
@@ -166,23 +160,23 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			}
 		});
 		
-		$(document).on("change", '.gc_matrix', function() {
+		$('.gc_matrix').change(function() {
 			theItem		=	$(this).attr('rel');
-			curValue	=	parseFloat($(this).val());
+			curValue	=	parseFloat($(this).attr('value'));
 			curValue	=	Math.round(curValue*100)/100;
 			totalID		=	$("#gc_total"+theItem);
 			totalValue	=	0;
 			errorFound	=	false;
 			$('.gc_matrix').each(function() {
 				if($(this).attr('rel') == theItem) {
-					if (isNaN($(this).val())) {
+					if (isNaN($(this).attr('value'))) {
 						alert ('not a valid number (use the 1.23 format)');
 						$(this).css('background-color','#ffa1a1');
 						$(this).focus();
 						
 						errorFound	=	true;
 					} else {
-						thisValue = parseFloat($(this).val());	
+						thisValue = parseFloat($(this).attr('value'));	
 						totalValue += Math.round(thisValue*100)/100;	
 						$(this).css('background-color','white');
 					}			
@@ -200,13 +194,13 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		function calculateGCVariance(theItem) {
 		totalValue		=	parseFloat($("#gc_total"+theItem).text());	
 		totalValue		=	Math.round(totalValue*100)/100;	
-		theRPRO			=	parseFloat($("#gc_rpro"+theItem).val());
+		theRPRO			=	parseFloat($("#gc_rpro"+theItem).attr('value'));
 		theRPRO			=	Math.round(theRPRO*100)/100;
 		variance		=	totalValue - theRPRO;
 			if (variance < 0) {
-				$("#gc_variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+				$("#gc_variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 			} else {
-				$("#gc_variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+				$("#gc_variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 			}
 		}
 		
@@ -216,13 +210,13 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			rPRO			=	0;
 			variance		=	0;
 			$('.'+col).each(function() {
-				totalColValue   +=      parseFloat($(this).val());
+				totalColValue   +=      parseFloat($(this).attr('value'));
 			});
 			$('.gc_totalcol').each(function() {
 				grandTotal	+=	parseFloat($(this).text());
 			});
 			$('.gc_rpro').each(function() {
-				rPRO		+=	parseFloat($(this).val());
+				rPRO		+=	parseFloat($(this).attr('value'));
 			});
 			$('.gc_variance').each(function() {
 				variance	+=	parseFloat($(this).text().substring(2));
@@ -233,26 +227,26 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			variance		=	Math.round(variance*100)/100;
 
 			if (variance < 0) {
-				$("#gc_variancethetotal").html('<font color="red"><b>$ '+variance+'</b></font>');
+				$("#gc_variancethetotal").html('<span class="input_error">$ '+variance+'</span>');
 			} else {
-				$("#gc_variancethetotal").html('<font color="black"><b>$ '+variance+'</b></font>');
+				$("#gc_variancethetotal").html('<span class="input_valid">$ '+variance+'</span>');
 			}
 		}
 
-		$(document).on("change",'.gc_rpro', function() {
-			if (isNaN($(this).val())) {
+		$('.gc_rpro').change(function() {
+			if (isNaN($(this).attr('value'))) {
 				alert ('not a valid number (use the 1.23 format)');
 				$(this).css('background-color','#ffa1a1');
 				$(this).focus();
 			} else {
 				theItem		=	$(this).attr('rel');
 				totalValue	=	parseFloat($("#gc_total"+theItem).text());
-				theRPRO		=	parseFloat($(this).val());
+				theRPRO		=	parseFloat($(this).attr('value'));
 				variance	=	totalValue - theRPRO;
 				if (variance < 0) {
-					$("#gc_variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+					$("#gc_variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 				} else {
-					$("#gc_variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+					$("#gc_variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 				}
 			}
 		});
@@ -260,13 +254,13 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		function calculateVariance(theItem) {
 		totalValue		=	parseFloat($("#total"+theItem).text());	
 		totalValue		=	Math.round(totalValue*100)/100;	
-		theRPRO			=	parseFloat($("#rpro"+theItem).val());
+		theRPRO			=	parseFloat($("#rpro"+theItem).attr('value'));
 		theRPRO			=	Math.round(theRPRO*100)/100;
 		variance		=	totalValue - theRPRO;
 			if (variance < 0) {
-				$("#variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+				$("#variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 			} else {
-				$("#variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+				$("#variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 			}
 		}
 		function calculateTotal(col) {
@@ -275,13 +269,13 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			rPRO			=	0;
 			variance		=	0;
 			$('.'+col).each(function() {
-				totalColValue   +=      parseFloat($(this).val());
+				totalColValue   +=      parseFloat($(this).attr('value'));
 			});
 			$('.totalcol').each(function() {
 				grandTotal	+=	parseFloat($(this).text());
 			});
 			$('.rpro').each(function() {
-				rPRO		+=	parseFloat($(this).val());
+				rPRO		+=	parseFloat($(this).attr('value'));
 			});
 			$('.variance').each(function() {
 				variance	+=	parseFloat($(this).text().substring(2));
@@ -296,17 +290,17 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			$('#rprototal').text('$ '+rPRO);
 			//$('#variancethetotal').text('$ '+variance);
 			if (variance < 0) {
-				$("#variancethetotal").html('<font color="red"><b>$ '+variance+'</b></font>');
+				$("#variancethetotal").html('<span class="input_error">$ '+variance+'</span>');
 			} else {
-				$("#variancethetotal").html('<font color="black"><b>$ '+variance+'</b></font>');
+				$("#variancethetotal").html('<span class="input_valid">$ '+variance+'</span>');
 			}
 		}
 		
 		
 		function calculateAll() {
 			$('.matrix').each(function() {
-				if	($(this).val()	== '') {
-					$(this).val('0.00');
+				if	($(this).attr('value')	== '') {
+					$(this).attr('value','0.00');
 				}
 			});
 			calculateTotal(1);
@@ -317,58 +311,61 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			$('.rpro').each(function() {
 			       theItem		=	$(this).attr('rel');
 			       totalValue	=	parseFloat($("#total"+theItem).text());
-			       theRPRO		=	parseFloat($(this).val());
+			       theRPRO		=	parseFloat($(this).attr('value'));
 			       variance	        =	totalValue - theRPRO;
 			       variance	        =	Math.round(variance*100)/100;
 			       if (variance < 0) {
-				       $("#variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+				       $("#variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 			       } else {
-				       $("#variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+				       $("#variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 			       }
 			       calculateTotal(1);
 		       }); 
 		}
 		
-		$(document).on("change", '.rpro', function() {
-			if (isNaN($(this).val())) {
+		$('.rpro').change(function() {
+			if (isNaN($(this).attr('value'))) {
 				alert ('not a valid number (use the 1.23 format)');
 				$(this).css('background-color','#ffa1a1');
 				$(this).focus();
 			} else {
 				theItem		=	$(this).attr('rel');
 				totalValue	=	parseFloat($("#total"+theItem).text());
-				theRPRO		=	parseFloat($(this).val());
+				theRPRO		=	parseFloat($(this).attr('value'));
 				variance	=	totalValue - theRPRO;
 				if (variance < 0) {
-					$("#variance"+theItem).html('<font color="red"><b>$ '+variance+'</b></font>');
+					$("#variance"+theItem).html('<span class="input_error">$ '+variance+'</span>');
 				} else {
-					$("#variance"+theItem).html('<font color="black"><b>$ '+variance+'</b></font>');
+					$("#variance"+theItem).html('<span class="input_valid">$ '+variance+'</span>');
 				}
 				calculateTotal(1);
 			}
 		});
 
-		$(document).on("change", '.report_date', function() {
-			theDate		=	$(this).val();
-			theStore	=	$('#curstore').val();
-			$.ajax({url: "update.php", type: "POST", async: false, data:{date: theDate, store: theStore}})
-			.done(function(data) {
-				if (data === 'new form') {
+		$('.report_date').change(function() {
+			theDate		=	$(this).attr('value');
+			theStore	=	$('#curstore').attr('value');
+			$.ajax({url: "ajax.php", type: "POST", async: false, data:{date: theDate, store: theStore},
+			success: function(data) {	
+				if (data == 'new form') {
 					if (shown == 0 && populate == 0) {
 						$("#tablediv").css('display','block');
-						$("#tooltip").fadeIn(750).delay(7000).fadeOut(750);
+						$("#tooltip").fadeIn(750).delay(7000).fadeOut(750); //css('display','block');
 						shown = 1;
 					}
 				}
 				else {
 					 location="admin.php?view_id="+data;
 				}
+			}
 			});
 		});
 		var shown = 0;
-		<?php if (!empty($items)) { echo 'calculateAll();'; } ?>
+		<?php if (!empty($items)) { ?>
+		calculateAll();		
+		<?php } ?>
 		
-		$(document).on("blur", "#service_head_count", function () {
+		$("#service_head_count").blur( function () {
 			var rc = false;
 			var v = $("#service_head_count").val();
 			/* force whole or half numbers */
@@ -384,7 +381,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			}
 		});
 		
-		$(document).on("blur", "#service_labor_completed", function()
+		$("#service_labor_completed").blur(function()
 		{
 			setSLCColor();
 		});
@@ -418,7 +415,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 		}
 
 
-		$(document).on("click", ".submit", function()
+		$(".submit").click(function()
 		{
 			var dataForm = $("#reconform").serialize();
 			$.ajax({
@@ -454,6 +451,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
                                      
                                     });
 				    $('.submit').css("display","none");
+				    //$('.status').css({"background-color":"#33FF00", "display":"block"}).fadeIn('slow').html(response);
 				}
 			});
 			return false;
@@ -485,7 +483,7 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 			</ul>
                         <br />
 			<p><b>Date: </b> <input id="datepicker" type="text" class="report_date" name="report_date" value="<?php if (!empty($items)) { echo $items['date'];}?>" /></p>
-			<br /><br />
+                        <br /><br />
 		</div>
 		<div style="clear:both;">&nbsp;</div>
 		<div id="tablediv" style="<?php if (!empty($items)) { echo 'display:block'; }?>">
@@ -493,105 +491,102 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 				<table id="table" style="width:90%" style="float:left;margin-left:50px;">
 					<thead>
 						<tr>
-						<td width="auto">&nbsp;</td>
+						<td width="150">&nbsp;</td>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
-							<td width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">Actuals</td>
+							<td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">Term <?php echo $i;?></td>
 						<?php } ?>
-						<td width="auto" >RPro</td>
-						<td width="auto" >Variance</td>
+						<td width="80">&nbsp;</td>
+						<td width="80" >Totals</td>
+						<td width="80" >RPro</td>
+						<td width="80" >Variance</td>
 						</tr> 
 					</thead>
 					<tbody> 
 					<?php while ($r	= mysql_fetch_assoc($allTypes) ) { ?>
 					<?php $totals = 0; ?>
 						<tr>
-							<td width="auto"><strong><?php echo $r['name']; ?></strong></td>
-							<?php $r['newname'] = friendly_string($r['name']); ?>
+							<td width="150"><strong><?php echo $r['name']; ?></strong></td>
+							<?php $r['newname'] = friendly_seo_string($r['name']); ?>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { 
 							if(($r['newname'] == 'paper-checks' || $r['newname'] == 'cash') && $i > 1) { ?>
-								<td width="auto"></td>
+								<td width="80"></td>
 							<?php continue; } else { ?> 
-							<td width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8"
+							<td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8"
 							value="<?php if (!empty($items)) {echo $items[$r['name']][$i]; } else { echo '0.00';}?>" /></td>
 							<?php continue; }	?>
-							<td width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8" 
+							<td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "matrix ".$i;?>" rel="<?php echo $r['newname']; ?>" name="item[<?php echo $r['name'];?>][]" type="text" size="8" 
 							value="<?php if (!empty($items)) { if (!empty($items[$r['name']][$i])) {echo $items[$r['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
 						<?php } ?>
-							<td width="auto" >$<input id="rpro<?php echo $r['newname'];?>" name="rpro[<?php echo $r['name'];?>]" class="rpro" rel="<?php echo $r['newname'];?>" type="text" size="8"
+							<td width="80" align="right">$</td>
+							<td width="80" class="totalcol" id="total<?php echo $r['newname'];?>"><?php if (!empty($items)) { if(!empty($items[$r['name']]['total'])) { echo $items[$r['name']]['total']; } else { echo '0.00';} } else { echo '0.00';}?></td>
+							<td width="80" >$<input id="rpro<?php echo $r['newname'];?>" name="rpro[<?php echo $r['name'];?>]" class="rpro" rel="<?php echo $r['newname'];?>" type="text" size="8"
 							value="<?php if (!empty($items)) { if($items[$r['name']][0] != '') { echo $items[$r['name']][0]; } else { echo '0.00';}}else{echo '0.00';}?>" /></td>
-							<td width="auto" id="variance<?php echo $r['newname'];?>" class="variance">$ 0.00</td>						
+							<td width="80" id="variance<?php echo $r['newname'];?>" class="variance">$ 0.00</td>						
 						</tr>
 					<?php  } ?>
-						<tr><td colspan="5"><hr style="width:95%;" /></td></tr>
+						<tr><td colspan="7"><hr style="width:95%;" /></td></tr>
 						<tr class="totals">
-							<td width="auto"><strong>TOTALS</strong></td>
+							<td width="150"><strong>TOTALS</strong></td>
 						<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
-							<td id="total<?php echo $i;?>" width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">$ 0.00<input type="hidden" class="matrix" rel="thetotal" name="total[term<?php echo $i;?>]" /></td>
+							<td id="total<?php echo $i;?>" width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$ 0.00<input type="hidden" class="matrix" rel="thetotal" name="total[term<?php echo $i;?>]" /></td>
 						<?php } ?>
-							<td width="auto" id="rprototal">$ 0.00</td>
-							<td width="auto" id="variancethetotal">$ 0.00</td>						
+							<td width="80" align="right">$</td>
+							<td width="80" id="totalthetotal">0.00</td>
+							<td width="80" id="rprototal">$ 0.00</td>
+							<td width="80" id="variancethetotal">$ 0.00</td>						
 						</tr>
-						<tr><td colspan=5>&nbsp;</td></tr>
+						<tr><td colspan=8>&nbsp;</td></tr>
 
 					<?php while ($gc = mysql_fetch_assoc($giftcards) ) { ?>
 					        <tr>
-							<td width="auto"><strong><?php echo $gc['name']; ?></strong></td>
-							<?php $gc['newname'] = friendly_string($gc['name']); ?>
+							<td width="150"><strong><?php echo $gc['name']; ?></strong></td>
+							<?php $gc['newname'] = friendly_seo_string($gc['name']); ?>
 							<?php for($i = 1;$i < ($selectedStore['num_terms']+1);$i++) { ?>
-							    <td width="auto" style="<? if ($i==1) { echo 'margin-left:auto;';}?>">$<input class="<?php echo "gc_matrix ".$i;?>" rel="<?php echo $gc['newname']; ?>" name="item[<?php echo $gc['name'];?>][]" type="text" size="8" value="<?php if (!empty($items)) { if (!empty($items[$gc['name']][$i])) {echo $items[$gc['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
+							    <td width="80" style="<? if ($i==1) { echo 'margin-left:140px;';}?>">$<input class="<?php echo "gc_matrix ".$i;?>" rel="<?php echo $gc['newname']; ?>" name="item[<?php echo $gc['name'];?>][]" type="text" size="8" value="<?php if (!empty($items)) { if (!empty($items[$gc['name']][$i])) {echo $items[$gc['name']][$i]; } else { echo '0.00';}} else { echo '0.00';}?>" /></td>
 						        <?php } ?>
-							<td width="auto" >$<input id="gc_rpro<?php echo $gc['newname'];?>" name="gc_rpro[<?php echo $gc['name'];?>]" class="gc_rpro" rel="<?php echo $gc['newname'];?>" type="text" size="8" value="<?php if (!empty($items)) { if($items[$gc['name']][0] != '') { echo $items[$gc['name']][0]; } else { echo '0.00';}}else{echo '0.00';}?>" /></td>
-							<td width="auto" id="gc_variance<?php echo $gc['newname'];?>" class="gc_variance">$ 0.00</td>						
+							<td width="80" align="right">$</td>
+							<td width="80" class="gc_totalcol" id="gc_total<?php echo $gc['newname'];?>"><?php if (!empty($items)) { if(!empty($items[$gc['name']]['total'])) { echo $items[$gc['name']]['total']; } else { echo '0.00';} } else { echo '0.00';}?></td>
+							<td width="80" >$<input id="gc_rpro<?php echo $gc['newname'];?>" name="gc_rpro[<?php echo $gc['name'];?>]" class="gc_rpro" rel="<?php echo $gc['newname'];?>" type="text" size="8" value="<?php if (!empty($items)) { if($items[$gc['name']][0] != '') { echo $items[$gc['name']][0]; } else { echo '0.00';}}else{echo '0.00';}?>" /></td>
+							<td width="80" id="gc_variance<?php echo $gc['newname'];?>" class="gc_variance">$ 0.00</td>						
 						</tr>
 					
 					<?php } ?>
 					</tbody>
 				</table>
-				<div style="clear:both;"></div>
-				<div id="textboxes">
-					<div class="float_left">
-						<h2>Comments:</h2>
-						<textarea rows="8" cols="45" name="comment"><?php if (!empty($items)) { echo $header['note']; }  ?></textarea>
+					<div style="clear:both;"></div>
+					<div id="textboxes">
+						<div class="float_left">
+							<h2>Comments:</h2>
+							<textarea rows="8" cols="45" name="comment"><?php if (!empty($items)) { echo $header['note']; }  ?></textarea>
+						</div>
+						<div class="float_right">
+							<h2>Huddle Topic:</h2>
+							<textarea rows="8" cols="45" name="huddle"><?php if (!empty($items)) { echo $checklist['huddle_topic']; } ?></textarea>
+							<br />
+						</div>
 					</div>
-					<div class="float_right">
-						<h2>Huddle Topic:</h2>
-						<textarea rows="8" cols="45" name="huddle"><?php if (!empty($items)) { echo $checklist['huddle_topic']; } ?></textarea>
-						<br />
+					<div style="clear:both;"></div>
+					<div id="restoptions">
+						<table style="text-align:center;margin-left:80px;">
+							<tr>
+								<td align="center" style="width:250px;">
+									<label>Service Head count </label><br /><span id="shc_formError"></span>
+									<input type="text" size="15" name="headcount" id="service_head_count" value="<?php if (!empty($items)) { echo $checklist['service_head_count']; } ?>" />
+								</td>
+								<td align="center" style="width:250px;">
+									<label>Service Labor completed:</label><br />
+									<input type="text" size="15" name="labor_completed" id="service_labor_completed" value="<?php if (!empty($items)) { echo $checklist['service_labor_completed']; } ?>" />
+								</td>
+								<td align="center" style="width:250px;">
+									<label>Service Labor goal</label><br />
+									<input readonly type="text" size="15" name="laborgoal" id="service_labor_goal" value="<?php if (!empty($items)) { echo $checklist['service_head_count'] * 200; } ?>" />
+								</td>
+							</tr>
+						</table>
 					</div>
-				</div>
-				<div style="clear:both;"></div>
-				<div id="restoptions">
-					<table style="text-align:center;margin-left:80px;">
-						<tr>
-							<td align="center" style="width:250px;">
-								<label>Service Head count </label><br /><span id="shc_formError"></span>
-								<input type="text" size="15" name="headcount" id="service_head_count" value="<?php if (!empty($items)) { echo $checklist['service_head_count']; } ?>" />
-							</td>
-							<td align="center" style="width:250px;">
-								<label>Service Labor completed:</label><br />
-								<input type="text" size="15" name="labor_completed" id="service_labor_completed" value="<?php if (!empty($items)) { echo $checklist['service_labor_completed']; } ?>" />
-							</td>
-							<td align="center" style="width:250px;">
-								<label>Service Labor goal</label><br />
-								<input readonly type="text" size="15" name="laborgoal" id="service_labor_goal" value="<?php if (!empty($items)) { echo $checklist['service_head_count'] * 200; } ?>" />
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div id="checkboxes" style="text-align:center;">
-					<table cellspacing="10" width="100%">
-						<tr align="center">
-							<td><label>A/C Off</label><br /><input type="checkbox" name="close_ac" <?php if (!empty($items)) { if ($checklist['ac_off'] == 1) { echo 'checked="checked"';} }?> /></td>
-							<td><label>A/V Off</label><br /><input type="checkbox" name="close_av"  <?php if (!empty($items)) { if ($checklist['av_off'] == 1) { echo 'checked="checked"';} }?>/></td>
-							<td><label>Close RPro</label><br /><input type="checkbox" name="close_rpro"  <?php if (!empty($items)) { if ($checklist['close_rpro'] == 1) { echo 'checked="checked"';} }?>/></td>
-							<td width="180"><input type="checkbox" name="bike_sales_reviewed"  <?php if (!empty($items)) { if ($checklist['bike_sales_reviewed'] == 1) { echo 'checked="checked"';} }?>/><label> Today's bike sales reviewed?</label></td>
-							<td width="180"><input type="checkbox" name="bike_receipts_accurate"  <?php if (!empty($items)) { if ($checklist['bike_receipts_accurate'] == 1) { echo 'checked="checked"';} }?>/><label> Reviewed all bike receipts for accuracy?</label></td>
-						</tr>
-					</table>
-				</div>
-				<p id="reportedBy"><b>Reported By:&nbsp;&nbsp;&nbsp;</b> <input type="text" size="20" name="username" id="employee_name" class="validate[required,custom[onlyLetterNumber]]" data-prompt-position="centerRight" value="<?php if (!empty($items)) { echo $header['employee_name']; }?>" /></p>
-				<div class="status"></div>
-				<input id="submit_recon" class="submit" type="button" value="<? if (!empty($items)) { echo 'Update report';} else { echo 'Submit report'; }?>" />
+					<p id="reportedBy"><b>Reported By:&nbsp;&nbsp;&nbsp;</b> <input type="text" size="20" name="username" id="employee_name" class="validate[required,custom[onlyLetterNumber]]" data-prompt-position="centerRight" value="<?php if (!empty($items)) { echo $header['employee_name']; }?>" /></p>
+					<div class="status"></div>
+					<input id="submit_recon" class="submit" type="button" value="<? if (!empty($items)) { echo 'Update report';} else { echo 'Submit report'; }?>" />
 		</div>
             </form>
     </div>
