@@ -1,25 +1,24 @@
 $(document).ready(function() {
 
-        var errorFound = false;
+        var errorFound = false, nameError = false;
         
         /* When store selected, query for existing data */
         $(document).on("change", "#store_id", function(){
             $(".status").empty();
-            $('.submit').prop("disabled",false);
             $.getJSON('update.php', {store:$('#store_id option:selected').val()}, function(data){
                 if (data.action === "new") {
                     /* show blank form */
                     $("#action").val("new");
                     document.getElementById("reconform").reset();
                     $(".variance, #total_actual, #total_rpro").empty();
-                    $(".submit").html("Submit Report");
+                    $(".submit").html("Submit Report").prop("disabled",false);
                 } else {
                     /* it's an update, so populate the form with the data */
                    populate(data);
                     $("#action").val("update");
                     $("#store").val(data.header.store_id);
                     $("#header_id").val(data.header.id);
-                    $(".submit").html("Update Report");
+                    $(".submit").html("Update Report").prop("disabled",false);
                 }
                 setLaborGoal($('#store_id option:selected').val());
                 $("#store").val($('#store_id option:selected').val());
@@ -28,11 +27,13 @@ $(document).ready(function() {
         });
 
         $(document).on("change", "input[type='text']", function() {
+                $(this).removeClass('input-error');
                 var theClass = $(this).attr('class'),
                     theItem  = $(this).attr('rel'),
                     curValue = Math.round(parseFloat( $(this).val() )*100)/100;
                     errorFound = false;
-                    $(this).removeClass('input-error');
+                    nameError = false;
+                    $(".status").html("").removeClass("input-error");
                 
                 $("."+theClass).each(function() {
                     if($(this).attr('rel') === theItem) {
@@ -40,10 +41,8 @@ $(document).ready(function() {
                         if (isNaN(curValue)) {
                             //alert ('not a valid number (use the 1.23 format)');
                             $(this).addClass("input-error");
-                            //$(this).val('').focus();
                             errorFound = true;
                         } else { /* input is valid */
-                            /* reset color, if previous error */
                             /* populate disabled fields with data */
                             $("input[class='col4'][rel='"+theItem+"']").val( $(this).val() );
                         }
@@ -52,7 +51,7 @@ $(document).ready(function() {
                 
                 /* Make sure name is filled in with valid characters */
                 if( $("input[name='username']").val() == '' || /[^a-zA-Z\s]/.test( $("input[name='username']").val() ) ){
-                    errorFound = true;
+                    nameError = true;
                     $("input[name='username']").addClass("input-error");
                 }
                 
@@ -231,7 +230,8 @@ $(document).ready(function() {
         $(document).on("click", ".submit", function(e) {
             e.preventDefault();
             /* Make sure required form data is present */
-            if ( !errorFound ) {
+            if ( !errorFound && !nameError ) {
+                $(".well").removeClass("input-error");
                 /* Submit the form */
                 $.ajax({
                     type: "POST",
@@ -241,7 +241,11 @@ $(document).ready(function() {
                 .done(function(response) {
                     $(".status").html(response);
                     $('.submit').prop("disabled",true).html("Done!");
+                    $(".well").addClass("input-valid");
                 });
+            } else {
+                $(".well").addClass("input-error");
+                $(".status").html("Unable to submit form. Your errors are highlighted in red").addClass("input-error");
             }
         });
 });

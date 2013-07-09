@@ -60,7 +60,6 @@ $today  = date("m-d-Y");
             </div>
 	    <div id="form" style="display:none;">
                 <form id="reconform">
-			<div class="status"></div>
 			<div id="i">
 			    <input id="date" type="text" name="date" class="large-font" value="<?php echo $today; ?>" readonly="true" tabindex="-1" /> 
 			    <input type="text" size="20" name="username" id="employee_name" value="" placeholder="Reported By:" />
@@ -209,6 +208,7 @@ $today  = date("m-d-Y");
 			<div class="well" style="max-width: 400px;">
 			    <button id="submit_recon" class="submit btn btn-large btn-block btn-primary" type="button">Submit Report</button>
 			</div>
+			<div class="status"></div>
                 </form>
 	    </div>
             <hr>
